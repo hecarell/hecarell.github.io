@@ -135,6 +135,19 @@
             color: white;
             border-color: var(--primary);
         }
+        .filter-btn-business {
+            border-color: #6ee7b7;
+            color: #065f46;
+        }
+        .filter-btn-business:hover {
+            border-color: #059669;
+            color: #065f46;
+        }
+        .filter-btn-business.active {
+            background: #059669;
+            border-color: #059669;
+            color: white;
+        }
 
         /* Main Content */
         .main {
@@ -217,6 +230,10 @@
         .badge-decision {
             background: #dbeafe;
             color: #1e40af;
+        }
+        .badge-business {
+            background: #d1fae5;
+            color: #065f46;
         }
 
         .card-desc {
@@ -372,6 +389,10 @@
             <div class="stat-number" id="decisionCount">--</div>
             <div class="stat-label">Decision Issued</div>
         </div>
+        <div class="stat">
+            <div class="stat-number" id="businessCount" style="color: #065f46;">--</div>
+            <div class="stat-label">New Businesses</div>
+        </div>
     </div>
 
     <div class="controls">
@@ -381,6 +402,7 @@
         <button class="filter-btn" data-filter="Under Review">Under Review</button>
         <button class="filter-btn" data-filter="Decision Issued">Decisions</button>
         <button class="filter-btn" data-filter="Neighborhood Meeting">Meetings</button>
+        <button class="filter-btn filter-btn-business" data-filter="new-business">New Business</button>
     </div>
 
     <div class="main">
@@ -412,6 +434,22 @@
 
     <script>
         const API_URL = 'https://maps.gilbertaz.gov/arcgis/rest/services/PZCasesPublic/FeatureServer/0/query';
+
+        const BUSINESS_KEYWORDS = [
+            'restaurant', 'cafe', 'coffee', 'retail', 'store', 'shop', 'tenant',
+            'hotel', 'motel', 'gym', 'fitness', 'salon', 'spa', 'market',
+            'dispensary', 'medical', 'dental', 'pharmacy', 'bank', 'credit union',
+            'gas station', 'car wash', 'auto', 'dealership', 'drive-thru',
+            'drive through', 'food', 'brewery', 'bar', 'lounge', 'boutique',
+            'urgent care', 'clinic', 'daycare', 'childcare', 'laundry',
+            'nail', 'barber', 'franchise', 'fast food', 'pizza', 'sushi',
+            'commercial tenant', 'new business', 'business license',
+        ];
+
+        function isNewBusiness(p) {
+            const text = `${p.title} ${p.description} ${p.comments}`.toLowerCase();
+            return BUSINESS_KEYWORDS.some(kw => text.includes(kw));
+        }
 
         let allProjects = [];
         let currentFilter = 'all';
@@ -462,12 +500,21 @@
                 allProjects.filter(p => p.category === 'Under Review').length;
             document.getElementById('decisionCount').textContent =
                 allProjects.filter(p => p.category === 'Decision Issued').length;
+            document.getElementById('businessCount').textContent =
+                allProjects.filter(isNewBusiness).length;
         }
 
         function getFilteredProjects() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
             return allProjects.filter(p => {
-                const matchesFilter = currentFilter === 'all' || p.category === currentFilter;
+                let matchesFilter;
+                if (currentFilter === 'all') {
+                    matchesFilter = true;
+                } else if (currentFilter === 'new-business') {
+                    matchesFilter = isNewBusiness(p);
+                } else {
+                    matchesFilter = p.category === currentFilter;
+                }
                 const matchesSearch = !searchTerm ||
                     p.title.toLowerCase().includes(searchTerm) ||
                     p.description.toLowerCase().includes(searchTerm) ||
@@ -477,7 +524,7 @@
             });
         }
 
-        function getBadgeClass(category) {
+        function getCategoryBadgeClass(category) {
             switch (category) {
                 case 'Under Review': return 'badge-review';
                 case 'Construction Underway': return 'badge-construction';
@@ -485,6 +532,18 @@
                 case 'Decision Issued': return 'badge-decision';
                 default: return 'badge-review';
             }
+        }
+
+        function getBadgeClass(category, project) {
+            if (currentFilter === 'new-business' || (project && isNewBusiness(project))) {
+                return 'badge-business';
+            }
+            return getCategoryBadgeClass(category);
+        }
+
+        function getBadgeLabel(category, project) {
+            if (currentFilter === 'new-business') return 'New Business';
+            return category;
         }
 
         function renderCards() {
@@ -501,7 +560,7 @@
                 <div class="card" onclick="showDetail(${p.id})">
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(p.title)}</div>
-                        <span class="badge ${getBadgeClass(p.category)}">${escapeHtml(p.category)}</span>
+                        <span class="badge ${getBadgeClass(p.category, p)}">${escapeHtml(getBadgeLabel(p.category, p))}</span>
                     </div>
                     <div class="card-desc">${escapeHtml(p.description)}</div>
                     <div class="card-meta">
@@ -521,10 +580,12 @@
                 ? `<a href="https://www.google.com/maps?q=${p.lat},${p.lng}" target="_blank" style="color: var(--primary-light);">View on Google Maps</a>`
                 : 'N/A';
 
+            const isBiz = isNewBusiness(p);
             modal.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <h2>${escapeHtml(p.title)}</h2>
-                <span class="badge ${getBadgeClass(p.category)}" style="margin-bottom:1rem;display:inline-block;">${escapeHtml(p.category)}</span>
+                <span class="badge ${isBiz ? 'badge-business' : getBadgeClass(p.category)}" style="margin-bottom:0.5rem;display:inline-block;">${isBiz ? 'New Business' : escapeHtml(p.category)}</span>
+                ${isBiz ? `<span class="badge ${getCategoryBadgeClass(p.category)}" style="margin-bottom:1rem;margin-left:0.4rem;display:inline-block;">${escapeHtml(p.category)}</span>` : ''}
 
                 <div class="modal-field">
                     <label>Description</label>
