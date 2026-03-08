@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gilbert AZ - New Business & Development Tracker</title>
+    <title>Gilbert AZ - Development & Business Tracker</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -62,6 +62,35 @@
             max-width: 600px;
             margin: 0 auto;
             position: relative;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: white;
+            border-bottom: 2px solid var(--border);
+            padding: 0 1.5rem;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            border: none;
+            background: none;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            white-space: nowrap;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
         }
 
         /* Stats Bar */
@@ -143,6 +172,10 @@
             padding: 0 1.5rem 3rem;
         }
 
+        /* Tab Panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
         /* Loading */
         .loading {
             text-align: center;
@@ -202,22 +235,20 @@
             text-transform: uppercase;
             letter-spacing: 0.03em;
         }
-        .badge-review {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .badge-construction {
-            background: #dcfce7;
-            color: #166534;
-        }
-        .badge-meeting {
-            background: #ede9fe;
-            color: #5b21b6;
-        }
-        .badge-decision {
-            background: #dbeafe;
-            color: #1e40af;
-        }
+
+        /* Development badges */
+        .badge-review { background: #fef3c7; color: #92400e; }
+        .badge-construction { background: #dcfce7; color: #166534; }
+        .badge-meeting { background: #ede9fe; color: #5b21b6; }
+        .badge-decision { background: #dbeafe; color: #1e40af; }
+
+        /* Business badges */
+        .badge-restaurant { background: #fef3c7; color: #92400e; }
+        .badge-retail { background: #dcfce7; color: #166534; }
+        .badge-service { background: #dbeafe; color: #1e40af; }
+        .badge-health { background: #fce7f3; color: #9d174d; }
+        .badge-construction-biz { background: #ede9fe; color: #5b21b6; }
+        .badge-other { background: #f1f5f9; color: #475569; }
 
         .card-desc {
             font-size: 0.88rem;
@@ -351,56 +382,115 @@
 <body>
 
     <div class="hero">
-        <h1>Gilbert, AZ - New Business Tracker</h1>
-        <p>Live data from the Town of Gilbert on new developments, construction, and businesses coming to the area</p>
+        <h1>Gilbert, AZ Tracker</h1>
+        <p>Live data on new developments, construction, and businesses coming to Gilbert</p>
     </div>
 
-    <div class="stats-bar">
-        <div class="stat">
-            <div class="stat-number" id="totalCount">--</div>
-            <div class="stat-label">Total Projects</div>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="development">&#127963; Development Projects</button>
+        <button class="tab-btn" data-tab="business">&#127981; Business Openings</button>
+    </div>
+
+    <!-- ===== DEVELOPMENT TAB ===== -->
+    <div id="tab-development" class="tab-panel active">
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number" id="totalCount">--</div>
+                <div class="stat-label">Total Projects</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="constructionCount">--</div>
+                <div class="stat-label">Under Construction</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="reviewCount">--</div>
+                <div class="stat-label">Under Review</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="decisionCount">--</div>
+                <div class="stat-label">Decision Issued</div>
+            </div>
         </div>
-        <div class="stat">
-            <div class="stat-number" id="constructionCount">--</div>
-            <div class="stat-label">Under Construction</div>
+
+        <div class="controls">
+            <input type="text" class="search-box" id="devSearchInput" placeholder="Search projects by name, description, or reference #...">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="Construction Underway">Construction</button>
+            <button class="filter-btn" data-filter="Under Review">Under Review</button>
+            <button class="filter-btn" data-filter="Decision Issued">Decisions</button>
+            <button class="filter-btn" data-filter="Neighborhood Meeting">Meetings</button>
         </div>
-        <div class="stat">
-            <div class="stat-number" id="reviewCount">--</div>
-            <div class="stat-label">Under Review</div>
-        </div>
-        <div class="stat">
-            <div class="stat-number" id="decisionCount">--</div>
-            <div class="stat-label">Decision Issued</div>
+
+        <div class="main">
+            <div id="devLoading" class="loading">
+                <div class="spinner"></div>
+                <p>Fetching live data from Town of Gilbert...</p>
+            </div>
+            <div class="cards" id="devCardsContainer"></div>
+
+            <div class="sources">
+                <h3>Official Data Sources</h3>
+                <ul>
+                    <li><a href="https://www.gilbertaz.gov/departments/development-services/planning/wdn" target="_blank">What's Developing Nearby - Interactive Map</a></li>
+                    <li><a href="https://data.gilbertaz.gov/datasets/TOG::permits/about" target="_blank">Gilbert Open Data Portal - Permits Dataset</a></li>
+                    <li><a href="https://www.gilbertaz.gov/departments/economic-development" target="_blank">Gilbert Office of Economic Development</a></li>
+                    <li><a href="https://www.gilbertaz.gov/departments/economic-development/heritage-district/projects" target="_blank">Heritage District Projects</a></li>
+                    <li><a href="https://www.gilbertaz.gov/departments/economic-development/northwest-gilbert-revitalization" target="_blank">Northwest Gilbert Revitalization</a></li>
+                </ul>
+            </div>
+            <p class="refresh-note">Data is pulled live from the Town of Gilbert's public ArcGIS services. Refresh to get the latest updates.</p>
         </div>
     </div>
 
-    <div class="controls">
-        <input type="text" class="search-box" id="searchInput" placeholder="Search projects by name, description, or reference #...">
-        <button class="filter-btn active" data-filter="all">All</button>
-        <button class="filter-btn" data-filter="Construction Underway">Construction</button>
-        <button class="filter-btn" data-filter="Under Review">Under Review</button>
-        <button class="filter-btn" data-filter="Decision Issued">Decisions</button>
-        <button class="filter-btn" data-filter="Neighborhood Meeting">Meetings</button>
-    </div>
-
-    <div class="main">
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p>Fetching live data from Town of Gilbert...</p>
+    <!-- ===== BUSINESS TAB ===== -->
+    <div id="tab-business" class="tab-panel">
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number" id="bizTotalCount">--</div>
+                <div class="stat-label">Total Businesses</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="bizRestaurantCount">--</div>
+                <div class="stat-label">Food &amp; Drink</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="bizRetailCount">--</div>
+                <div class="stat-label">Retail</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="bizServiceCount">--</div>
+                <div class="stat-label">Services</div>
+            </div>
         </div>
-        <div class="cards" id="cardsContainer"></div>
 
-        <div class="sources">
-            <h3>Official Data Sources</h3>
-            <ul>
-                <li><a href="https://www.gilbertaz.gov/departments/development-services/planning/wdn" target="_blank">What's Developing Nearby - Interactive Map</a></li>
-                <li><a href="https://data.gilbertaz.gov/datasets/TOG::permits/about" target="_blank">Gilbert Open Data Portal - Permits Dataset</a></li>
-                <li><a href="https://www.gilbertaz.gov/departments/economic-development" target="_blank">Gilbert Office of Economic Development</a></li>
-                <li><a href="https://www.gilbertaz.gov/departments/economic-development/heritage-district/projects" target="_blank">Heritage District Projects</a></li>
-                <li><a href="https://www.gilbertaz.gov/departments/economic-development/northwest-gilbert-revitalization" target="_blank">Northwest Gilbert Revitalization</a></li>
-            </ul>
+        <div class="controls">
+            <input type="text" class="search-box" id="bizSearchInput" placeholder="Search businesses by name, type, or address...">
+            <button class="filter-btn biz-filter active" data-filter="all">All</button>
+            <button class="filter-btn biz-filter" data-filter="restaurant">Food &amp; Drink</button>
+            <button class="filter-btn biz-filter" data-filter="retail">Retail</button>
+            <button class="filter-btn biz-filter" data-filter="service">Services</button>
+            <button class="filter-btn biz-filter" data-filter="health">Health</button>
+            <button class="filter-btn biz-filter" data-filter="construction">Construction</button>
         </div>
-        <p class="refresh-note">Data is pulled live from the Town of Gilbert's public ArcGIS services. Refresh to get the latest updates.</p>
+
+        <div class="main">
+            <div id="bizLoading" class="loading">
+                <div class="spinner"></div>
+                <p>Fetching business license data from Gilbert Open Data...</p>
+            </div>
+            <div class="cards" id="bizCardsContainer"></div>
+
+            <div class="sources">
+                <h3>Official Data Sources</h3>
+                <ul>
+                    <li><a href="https://data.gilbertaz.gov/datasets/TOG::business-licenses/about" target="_blank">Gilbert Open Data Portal - Business Licenses Dataset</a></li>
+                    <li><a href="https://www.gilbertaz.gov/departments/economic-development" target="_blank">Gilbert Office of Economic Development</a></li>
+                    <li><a href="https://www.gilbertaz.gov/departments/development-services/business-licensing" target="_blank">Gilbert Business Licensing</a></li>
+                </ul>
+            </div>
+            <p class="refresh-note">Business license data is pulled from Gilbert's open data portal. New licenses are issued regularly — refresh for the latest.</p>
+        </div>
     </div>
 
     <!-- Detail Modal -->
@@ -411,10 +501,27 @@
     </div>
 
     <script>
-        const API_URL = 'https://maps.gilbertaz.gov/arcgis/rest/services/PZCasesPublic/FeatureServer/0/query';
+        // =====================
+        // TAB SWITCHING
+        // =====================
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabPanels = document.querySelectorAll('.tab-panel');
 
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabPanels.forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+            });
+        });
+
+        // =====================
+        // DEVELOPMENT TRACKER
+        // =====================
+        const DEV_API = 'https://maps.gilbertaz.gov/arcgis/rest/services/PZCasesPublic/FeatureServer/0/query';
         let allProjects = [];
-        let currentFilter = 'all';
+        let devFilter = 'all';
 
         async function fetchProjects() {
             const params = new URLSearchParams({
@@ -426,7 +533,7 @@
             });
 
             try {
-                const response = await fetch(`${API_URL}?${params}`);
+                const response = await fetch(`${DEV_API}?${params}`);
                 const data = await response.json();
 
                 if (data.features) {
@@ -444,17 +551,17 @@
                     }));
                 }
 
-                updateStats();
-                renderCards();
+                updateDevStats();
+                renderDevCards();
             } catch (err) {
-                document.getElementById('loading').innerHTML = `
+                document.getElementById('devLoading').innerHTML = `
                     <p style="color: var(--red);">Could not load live data. Please try refreshing the page.</p>
                     <p style="margin-top: 0.5rem; font-size: 0.85rem;">Error: ${err.message}</p>
                 `;
             }
         }
 
-        function updateStats() {
+        function updateDevStats() {
             document.getElementById('totalCount').textContent = allProjects.length;
             document.getElementById('constructionCount').textContent =
                 allProjects.filter(p => p.category === 'Construction Underway').length;
@@ -465,9 +572,9 @@
         }
 
         function getFilteredProjects() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const searchTerm = document.getElementById('devSearchInput').value.toLowerCase();
             return allProjects.filter(p => {
-                const matchesFilter = currentFilter === 'all' || p.category === currentFilter;
+                const matchesFilter = devFilter === 'all' || p.category === devFilter;
                 const matchesSearch = !searchTerm ||
                     p.title.toLowerCase().includes(searchTerm) ||
                     p.description.toLowerCase().includes(searchTerm) ||
@@ -477,7 +584,7 @@
             });
         }
 
-        function getBadgeClass(category) {
+        function getDevBadgeClass(category) {
             switch (category) {
                 case 'Under Review': return 'badge-review';
                 case 'Construction Underway': return 'badge-construction';
@@ -487,9 +594,9 @@
             }
         }
 
-        function renderCards() {
-            document.getElementById('loading').style.display = 'none';
-            const container = document.getElementById('cardsContainer');
+        function renderDevCards() {
+            document.getElementById('devLoading').style.display = 'none';
+            const container = document.getElementById('devCardsContainer');
             const filtered = getFilteredProjects();
 
             if (filtered.length === 0) {
@@ -498,10 +605,10 @@
             }
 
             container.innerHTML = filtered.map(p => `
-                <div class="card" onclick="showDetail(${p.id})">
+                <div class="card" onclick="showDevDetail(${p.id})">
                     <div class="card-header">
                         <div class="card-title">${escapeHtml(p.title)}</div>
-                        <span class="badge ${getBadgeClass(p.category)}">${escapeHtml(p.category)}</span>
+                        <span class="badge ${getDevBadgeClass(p.category)}">${escapeHtml(p.category)}</span>
                     </div>
                     <div class="card-desc">${escapeHtml(p.description)}</div>
                     <div class="card-meta">
@@ -512,7 +619,7 @@
             `).join('');
         }
 
-        function showDetail(id) {
+        function showDevDetail(id) {
             const p = allProjects.find(x => x.id === id);
             if (!p) return;
 
@@ -524,8 +631,7 @@
             modal.innerHTML = `
                 <button class="modal-close" onclick="closeModal()">&times;</button>
                 <h2>${escapeHtml(p.title)}</h2>
-                <span class="badge ${getBadgeClass(p.category)}" style="margin-bottom:1rem;display:inline-block;">${escapeHtml(p.category)}</span>
-
+                <span class="badge ${getDevBadgeClass(p.category)}" style="margin-bottom:1rem;display:inline-block;">${escapeHtml(p.category)}</span>
                 <div class="modal-field">
                     <label>Description</label>
                     <p>${escapeHtml(p.description)}</p>
@@ -543,27 +649,234 @@
             document.getElementById('modalOverlay').classList.add('active');
         }
 
+        document.getElementById('devSearchInput').addEventListener('input', renderDevCards);
+
+        document.querySelectorAll('.filter-btn:not(.biz-filter)').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn:not(.biz-filter)').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                devFilter = btn.dataset.filter;
+                renderDevCards();
+            });
+        });
+
+        // =====================
+        // BUSINESS TRACKER
+        // =====================
+        // Gilbert Open Data Portal (Socrata) - business licenses dataset
+        // Dataset: TOG::business-licenses
+        const BIZ_API = 'https://data.gilbertaz.gov/resource/5sn2-fkpz.json';
+
+        let allBusinesses = [];
+        let bizFilter = 'all';
+        let bizDataLoaded = false;
+
+        // Classify business type from description/license type fields
+        function classifyBusiness(name, licenseType, description) {
+            const text = `${name} ${licenseType} ${description}`.toLowerCase();
+            if (/restaurant|cafe|coffee|pizza|burger|sushi|taco|bar|brewery|bakery|food|grill|kitchen|diner|eatery|bbq|sandwich|buffet|juice|smoothie|boba/.test(text)) return 'restaurant';
+            if (/salon|spa|nail|barber|hair|beauty|massage|yoga|gym|fitness|pilates|studio/.test(text)) return 'health';
+            if (/plumb|electric|hvac|roofing|contractor|construction|landscap|paint|tile|flooring|concrete/.test(text)) return 'construction';
+            if (/retail|store|shop|boutique|market|dispensary|clothing|furniture|jewelry|pet|book|gift|toy/.test(text)) return 'retail';
+            if (/consult|insurance|realtor|real estate|law|attorney|accounting|finance|mortgage|tech|software|it |marketing|design|media/.test(text)) return 'service';
+            return 'other';
+        }
+
+        function getBizBadgeClass(type) {
+            const map = {
+                restaurant: 'badge-restaurant',
+                retail: 'badge-retail',
+                service: 'badge-service',
+                health: 'badge-health',
+                construction: 'badge-construction-biz',
+                other: 'badge-other'
+            };
+            return map[type] || 'badge-other';
+        }
+
+        function getBizBadgeLabel(type) {
+            const map = {
+                restaurant: 'Food & Drink',
+                retail: 'Retail',
+                service: 'Services',
+                health: 'Health & Beauty',
+                construction: 'Construction',
+                other: 'Other'
+            };
+            return map[type] || 'Other';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            if (isNaN(d)) return dateStr;
+            return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        async function fetchBusinesses() {
+            if (bizDataLoaded) return;
+
+            // Fetch recent business licenses, ordered by issue date descending
+            const params = new URLSearchParams({
+                '$order': ':created_at DESC',
+                '$limit': '500',
+                '$where': "license_status='Active'"
+            });
+
+            try {
+                const response = await fetch(`${BIZ_API}?${params}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data = await response.json();
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    throw new Error('No business data returned');
+                }
+
+                allBusinesses = data.map((b, i) => {
+                    const name = b.business_name || b.dba_name || b.owner_name || 'Unknown Business';
+                    const licenseType = b.license_type || b.business_type || '';
+                    const description = b.description || b.naics_description || '';
+                    const type = classifyBusiness(name, licenseType, description);
+                    return {
+                        id: b.license_number || b.objectid || i,
+                        name,
+                        licenseType,
+                        description,
+                        address: [b.address, b.city, b.state, b.zip].filter(Boolean).join(', ') || b.location_address || '',
+                        issueDate: b.issue_date || b.license_start_date || b.created_at || '',
+                        expirationDate: b.expiration_date || b.license_end_date || '',
+                        status: b.license_status || b.status || 'Active',
+                        type,
+                        lat: b.latitude || (b.location && b.location.latitude),
+                        lng: b.longitude || (b.location && b.location.longitude),
+                        raw: b
+                    };
+                });
+
+                bizDataLoaded = true;
+                updateBizStats();
+                renderBizCards();
+
+            } catch (err) {
+                document.getElementById('bizLoading').innerHTML = `
+                    <p style="color: var(--red); margin-bottom: 0.5rem;">Could not load business license data.</p>
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">
+                        The business license dataset may use a different endpoint.
+                        Visit the <a href="https://data.gilbertaz.gov" target="_blank" style="color:var(--primary-light)">Gilbert Open Data Portal</a> directly to browse available datasets.
+                    </p>
+                    <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Error: ${err.message}</p>
+                `;
+            }
+        }
+
+        function updateBizStats() {
+            document.getElementById('bizTotalCount').textContent = allBusinesses.length;
+            document.getElementById('bizRestaurantCount').textContent =
+                allBusinesses.filter(b => b.type === 'restaurant').length;
+            document.getElementById('bizRetailCount').textContent =
+                allBusinesses.filter(b => b.type === 'retail').length;
+            document.getElementById('bizServiceCount').textContent =
+                allBusinesses.filter(b => b.type === 'service').length;
+        }
+
+        function getFilteredBusinesses() {
+            const searchTerm = document.getElementById('bizSearchInput').value.toLowerCase();
+            return allBusinesses.filter(b => {
+                const matchesFilter = bizFilter === 'all' || b.type === bizFilter;
+                const matchesSearch = !searchTerm ||
+                    b.name.toLowerCase().includes(searchTerm) ||
+                    b.licenseType.toLowerCase().includes(searchTerm) ||
+                    b.description.toLowerCase().includes(searchTerm) ||
+                    b.address.toLowerCase().includes(searchTerm);
+                return matchesFilter && matchesSearch;
+            });
+        }
+
+        function renderBizCards() {
+            document.getElementById('bizLoading').style.display = 'none';
+            const container = document.getElementById('bizCardsContainer');
+            const filtered = getFilteredBusinesses();
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div class="no-results">No businesses found matching your criteria.</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(b => `
+                <div class="card" onclick="showBizDetail(${JSON.stringify(b.id).replace(/"/g, '&quot;')})">
+                    <div class="card-header">
+                        <div class="card-title">${escapeHtml(b.name)}</div>
+                        <span class="badge ${getBizBadgeClass(b.type)}">${getBizBadgeLabel(b.type)}</span>
+                    </div>
+                    <div class="card-desc">${escapeHtml(b.licenseType || b.description || 'Business license issued by Town of Gilbert')}</div>
+                    <div class="card-meta">
+                        ${b.address ? `<span>&#128205; ${escapeHtml(b.address)}</span>` : ''}
+                        ${b.issueDate ? `<span>&#128197; ${formatDate(b.issueDate)}</span>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showBizDetail(id) {
+            const b = allBusinesses.find(x => String(x.id) === String(id));
+            if (!b) return;
+
+            const modal = document.getElementById('modalContent');
+            const mapLink = b.lat && b.lng
+                ? `<a href="https://www.google.com/maps?q=${b.lat},${b.lng}" target="_blank" style="color: var(--primary-light);">View on Google Maps</a>`
+                : b.address
+                    ? `<a href="https://www.google.com/maps?q=${encodeURIComponent(b.address + ' Gilbert AZ')}" target="_blank" style="color: var(--primary-light);">Search on Google Maps</a>`
+                    : 'N/A';
+
+            modal.innerHTML = `
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2>${escapeHtml(b.name)}</h2>
+                <span class="badge ${getBizBadgeClass(b.type)}" style="margin-bottom:1rem;display:inline-block;">${getBizBadgeLabel(b.type)}</span>
+                ${b.licenseType ? `<div class="modal-field"><label>License Type</label><p>${escapeHtml(b.licenseType)}</p></div>` : ''}
+                ${b.description ? `<div class="modal-field"><label>Description</label><p>${escapeHtml(b.description)}</p></div>` : ''}
+                ${b.address ? `<div class="modal-field"><label>Address</label><p>${escapeHtml(b.address)}</p></div>` : ''}
+                ${b.id ? `<div class="modal-field"><label>License Number</label><p>${escapeHtml(String(b.id))}</p></div>` : ''}
+                ${b.issueDate ? `<div class="modal-field"><label>Issue Date</label><p>${formatDate(b.issueDate)}</p></div>` : ''}
+                ${b.expirationDate ? `<div class="modal-field"><label>Expiration Date</label><p>${formatDate(b.expirationDate)}</p></div>` : ''}
+                <div class="modal-field"><label>Status</label><p>${escapeHtml(b.status)}</p></div>
+                <div class="modal-field"><label>Location</label><p>${mapLink}</p></div>
+            `;
+
+            document.getElementById('modalOverlay').classList.add('active');
+        }
+
+        document.getElementById('bizSearchInput').addEventListener('input', renderBizCards);
+
+        document.querySelectorAll('.biz-filter').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.biz-filter').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                bizFilter = btn.dataset.filter;
+                renderBizCards();
+            });
+        });
+
+        // Load business data when that tab is clicked
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (btn.dataset.tab === 'business' && !bizDataLoaded) {
+                    fetchBusinesses();
+                }
+            });
+        });
+
+        // =====================
+        // SHARED MODAL
+        // =====================
         function closeModal() {
             document.getElementById('modalOverlay').classList.remove('active');
         }
 
         function escapeHtml(str) {
             const div = document.createElement('div');
-            div.textContent = str;
+            div.textContent = String(str);
             return div.innerHTML;
         }
-
-        // Event Listeners
-        document.getElementById('searchInput').addEventListener('input', renderCards);
-
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                renderCards();
-            });
-        });
 
         document.getElementById('modalOverlay').addEventListener('click', (e) => {
             if (e.target === document.getElementById('modalOverlay')) closeModal();
@@ -573,7 +886,7 @@
             if (e.key === 'Escape') closeModal();
         });
 
-        // Init
+        // Init - load development data immediately
         fetchProjects();
     </script>
 </body>
