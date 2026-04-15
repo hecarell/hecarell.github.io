@@ -3,29 +3,769 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World</title>
+    <title>Kindergarten Quiz Adventure</title>
     <style>
+        :root {
+            --sky: #bfe9ff;
+            --sun: #ffd166;
+            --grass: #b8e986;
+            --leaf: #34a853;
+            --berry: #ff6b6b;
+            --ink: #16324f;
+            --card: rgba(255, 255, 255, 0.88);
+            --shadow: 0 18px 50px rgba(22, 50, 79, 0.18);
+            --correct: #1f9d55;
+            --wrong: #d64545;
+            --accent: #ff8c42;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            background: white;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: "Avenir Next", "Trebuchet MS", "Gill Sans", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 30%),
+                radial-gradient(circle at top right, rgba(255, 209, 102, 0.5), rgba(255, 209, 102, 0) 24%),
+                linear-gradient(180deg, #9ddcff 0%, var(--sky) 42%, #dbf6ff 42%, #dbf6ff 100%);
+            overflow-x: hidden;
+        }
+
+        body::before,
+        body::after {
+            content: "";
+            position: fixed;
+            inset: auto;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::before {
+            width: 260px;
+            height: 260px;
+            top: 32px;
+            right: 40px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff5b8 0%, var(--sun) 60%, rgba(255, 209, 102, 0.2) 74%, rgba(255, 209, 102, 0) 76%);
+        }
+
+        body::after {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 150px;
+            background:
+                radial-gradient(circle at 12% 100%, #77c76c 0 18%, rgba(0, 0, 0, 0) 19%),
+                radial-gradient(circle at 28% 100%, #7fd06e 0 22%, rgba(0, 0, 0, 0) 23%),
+                radial-gradient(circle at 48% 100%, #67bd5d 0 18%, rgba(0, 0, 0, 0) 19%),
+                radial-gradient(circle at 68% 100%, #82d57c 0 20%, rgba(0, 0, 0, 0) 21%),
+                radial-gradient(circle at 88% 100%, #73c866 0 19%, rgba(0, 0, 0, 0) 20%),
+                linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 30%, var(--grass) 31%, #93db74 100%);
+        }
+
+        .page {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .app {
+            width: min(920px, 100%);
+            background: var(--card);
+            backdrop-filter: blur(12px);
+            border: 4px solid rgba(255, 255, 255, 0.75);
+            border-radius: 32px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .hero {
+            padding: 28px 28px 18px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 240, 220, 0.9)),
+                linear-gradient(135deg, #fff, #fff);
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            background: #fff;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            color: #cf5c36;
+            box-shadow: 0 10px 24px rgba(207, 92, 54, 0.14);
+        }
+
+        .badge-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff8c42, #ffd166);
         }
 
         h1 {
-            font-size: 3em;
-            font-weight: 300;
-            color: #000;
+            margin: 16px 0 10px;
+            font-size: clamp(2.1rem, 4vw, 3.4rem);
+            line-height: 0.98;
+            letter-spacing: 0.01em;
+        }
+
+        .subtitle {
+            max-width: 640px;
             margin: 0;
-            letter-spacing: 0.05em;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .panel {
+            padding: 24px 28px 30px;
+        }
+
+        .status-row {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            flex: 1 1 140px;
+            min-width: 140px;
+            padding: 14px 16px;
+            border-radius: 20px;
+            background: white;
+            box-shadow: 0 10px 24px rgba(22, 50, 79, 0.08);
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #5d758d;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.45rem;
+            font-weight: 800;
+        }
+
+        .progress-wrap {
+            margin-bottom: 22px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 16px;
+            border-radius: 999px;
+            background: #e8f4fb;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #ff8c42, #ffd166, #7bd389);
+            transition: width 280ms ease;
+        }
+
+        .question-card {
+            position: relative;
+            padding: 26px;
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at top right, rgba(255, 209, 102, 0.2), rgba(255, 209, 102, 0) 30%),
+                white;
+            box-shadow: 0 14px 30px rgba(22, 50, 79, 0.09);
+        }
+
+        .topic-pill {
+            display: inline-block;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: #eef8ff;
+            color: #2a6c9b;
+            font-weight: 700;
+            font-size: 0.88rem;
+            margin-bottom: 14px;
+        }
+
+        .question-text {
+            margin: 0 0 22px;
+            font-size: clamp(1.4rem, 2.6vw, 2rem);
+            line-height: 1.28;
+        }
+
+        .choices {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .choice {
+            border: none;
+            border-radius: 22px;
+            padding: 18px 16px;
+            text-align: left;
+            font: inherit;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--ink);
+            background: #f5fbff;
+            cursor: pointer;
+            transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+            box-shadow: 0 8px 18px rgba(22, 50, 79, 0.08);
+        }
+
+        .choice:hover,
+        .choice:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(22, 50, 79, 0.14);
+            outline: none;
+        }
+
+        .choice:disabled {
+            cursor: default;
+        }
+
+        .choice.correct {
+            background: rgba(31, 157, 85, 0.15);
+            color: #176941;
+            box-shadow: 0 10px 24px rgba(31, 157, 85, 0.18);
+        }
+
+        .choice.wrong {
+            background: rgba(214, 69, 69, 0.14);
+            color: #9f2f2f;
+            box-shadow: 0 10px 24px rgba(214, 69, 69, 0.16);
+        }
+
+        .feedback {
+            min-height: 68px;
+            margin-top: 18px;
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: #eef8ff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .feedback-text {
+            margin: 0;
+            font-size: 1rem;
+            line-height: 1.45;
+            font-weight: 700;
+        }
+
+        .feedback-text.good {
+            color: var(--correct);
+        }
+
+        .feedback-text.try {
+            color: var(--wrong);
+        }
+
+        .next-btn,
+        .start-btn,
+        .restart-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 14px 22px;
+            font: inherit;
+            font-weight: 800;
+            font-size: 1rem;
+            color: white;
+            background: linear-gradient(135deg, #ff8c42, #ff6b6b);
+            cursor: pointer;
+            box-shadow: 0 14px 28px rgba(255, 107, 107, 0.3);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .next-btn:hover,
+        .next-btn:focus-visible,
+        .start-btn:hover,
+        .start-btn:focus-visible,
+        .restart-btn:hover,
+        .restart-btn:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 30px rgba(255, 107, 107, 0.35);
+            outline: none;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: rise 260ms ease;
+        }
+
+        .welcome,
+        .results {
+            text-align: center;
+            padding: 18px 4px 6px;
+        }
+
+        .welcome-card,
+        .results-card {
+            padding: 30px 24px;
+            border-radius: 30px;
+            background:
+                radial-gradient(circle at top left, rgba(123, 211, 137, 0.2), rgba(123, 211, 137, 0) 30%),
+                radial-gradient(circle at top right, rgba(255, 209, 102, 0.22), rgba(255, 209, 102, 0) 32%),
+                white;
+            box-shadow: 0 14px 32px rgba(22, 50, 79, 0.1);
+        }
+
+        .welcome h2,
+        .results h2 {
+            margin-top: 0;
+            font-size: clamp(1.8rem, 3.2vw, 2.5rem);
+        }
+
+        .welcome p,
+        .results p {
+            max-width: 640px;
+            margin: 0 auto 18px;
+            font-size: 1.05rem;
+            line-height: 1.55;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 26px 0;
+        }
+
+        .feature {
+            padding: 18px 14px;
+            border-radius: 22px;
+            background: #f6fbff;
+            box-shadow: 0 10px 22px rgba(22, 50, 79, 0.07);
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .big-score {
+            margin: 18px auto;
+            width: min(220px, 100%);
+            aspect-ratio: 1;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: conic-gradient(from 180deg, #7bd389, #ffd166, #ff8c42, #7bd389);
+            box-shadow: 0 18px 38px rgba(22, 50, 79, 0.14);
+        }
+
+        .big-score-inner {
+            width: calc(100% - 18px);
+            height: calc(100% - 18px);
+            border-radius: 50%;
+            background: white;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .big-score-number {
+            font-size: 3rem;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .big-score-label {
+            font-size: 0.96rem;
+            font-weight: 700;
+            color: #58708a;
+        }
+
+        .result-message {
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        @keyframes rise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 760px) {
+            .page {
+                padding: 14px;
+            }
+
+            .hero,
+            .panel {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .choices,
+            .feature-row {
+                grid-template-columns: 1fr;
+            }
+
+            .question-card {
+                padding: 20px;
+            }
+
+            .feedback {
+                align-items: stretch;
+            }
+
+            .next-btn,
+            .start-btn,
+            .restart-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="page">
+        <main class="app">
+            <section class="hero">
+                <div class="hero-top">
+                    <div class="badge">
+                        <span class="badge-dot"></span>
+                        Kindergarten Quiz Adventure
+                    </div>
+                </div>
+                <h1>Learn, smile, and answer 50 fun school questions.</h1>
+                <p class="subtitle">This playful web app helps young children practice kindergarten skills like letters, numbers, colors, shapes, rhyming, patterns, weather, and more.</p>
+            </section>
+
+            <section class="panel">
+                <div id="welcome-screen" class="screen welcome active">
+                    <div class="welcome-card">
+                        <h2>Ready to play and learn?</h2>
+                        <p>Each question has multiple choices. Pick the best answer, get cheerful feedback, and see your score grow as you move through all 50 questions.</p>
+                        <div class="feature-row">
+                            <div class="feature">
+                                <strong>50 Questions</strong>
+                                Practice important kindergarten topics.
+                            </div>
+                            <div class="feature">
+                                <strong>Easy Choices</strong>
+                                Big buttons make answers simple to tap.
+                            </div>
+                            <div class="feature">
+                                <strong>Happy Feedback</strong>
+                                Celebrate correct answers and keep trying.
+                            </div>
+                        </div>
+                        <button id="start-button" class="start-btn" type="button">Start the Quiz</button>
+                    </div>
+                </div>
+
+                <div id="quiz-screen" class="screen">
+                    <div class="status-row">
+                        <div class="stat">
+                            <span class="stat-label">Question</span>
+                            <span id="question-counter" class="stat-value">1 / 50</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Score</span>
+                            <span id="score-counter" class="stat-value">0</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-label">Topic</span>
+                            <span id="topic-counter" class="stat-value">Letters</span>
+                        </div>
+                    </div>
+
+                    <div class="progress-wrap">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span id="progress-text">0%</span>
+                        </div>
+                        <div class="progress-bar" aria-hidden="true">
+                            <div id="progress-fill" class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <div class="question-card">
+                        <span id="topic-pill" class="topic-pill">Letters</span>
+                        <p id="question-text" class="question-text"></p>
+                        <div id="choices" class="choices"></div>
+                        <div id="feedback" class="feedback hide">
+                            <p id="feedback-text" class="feedback-text"></p>
+                            <button id="next-button" class="next-btn" type="button">Next Question</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="results-screen" class="screen results">
+                    <div class="results-card">
+                        <h2>Quiz Complete!</h2>
+                        <div class="big-score">
+                            <div class="big-score-inner">
+                                <div id="final-score" class="big-score-number">0</div>
+                                <div class="big-score-label">correct answers</div>
+                            </div>
+                        </div>
+                        <p id="result-message" class="result-message"></p>
+                        <p id="result-summary"></p>
+                        <button id="restart-button" class="restart-btn" type="button">Play Again</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const questions = [
+            { topic: "Letters", prompt: "Which letter comes first in the alphabet?", choices: ["A", "M", "S", "Z"], answer: 0, explanation: "A is the first letter in the alphabet." },
+            { topic: "Letters", prompt: "Which letter comes right after B?", choices: ["D", "C", "A", "F"], answer: 1, explanation: "The alphabet goes A, B, C." },
+            { topic: "Letters", prompt: "Which letter is a vowel?", choices: ["T", "E", "R", "N"], answer: 1, explanation: "E is one of the vowels: A, E, I, O, U." },
+            { topic: "Letters", prompt: "Which word starts with the letter S?", choices: ["Sun", "Ball", "Cat", "Dog"], answer: 0, explanation: "Sun begins with the letter S." },
+            { topic: "Letters", prompt: "Which letter is in the middle of the word CAT?", choices: ["C", "A", "T", "P"], answer: 1, explanation: "The middle letter in CAT is A." },
+
+            { topic: "Numbers", prompt: "Which number is bigger?", choices: ["2", "9", "1", "4"], answer: 1, explanation: "9 is greater than 2, 1, and 4." },
+            { topic: "Numbers", prompt: "What number comes after 7?", choices: ["6", "8", "9", "5"], answer: 1, explanation: "After 7 comes 8." },
+            { topic: "Numbers", prompt: "How many apples are in a pair?", choices: ["1", "2", "3", "4"], answer: 1, explanation: "A pair means 2." },
+            { topic: "Numbers", prompt: "Which number is the smallest?", choices: ["5", "3", "7", "9"], answer: 1, explanation: "3 is the smallest number in the group." },
+            { topic: "Numbers", prompt: "What number comes before 10?", choices: ["8", "11", "9", "7"], answer: 2, explanation: "The number before 10 is 9." },
+
+            { topic: "Counting", prompt: "If you have 3 blocks and get 1 more, how many blocks do you have?", choices: ["2", "3", "4", "5"], answer: 2, explanation: "3 plus 1 equals 4." },
+            { topic: "Counting", prompt: "How many fingers are on one hand?", choices: ["3", "4", "5", "6"], answer: 2, explanation: "One hand has 5 fingers." },
+            { topic: "Counting", prompt: "If 1 bird flies away from 4 birds, how many birds are left?", choices: ["2", "3", "4", "5"], answer: 1, explanation: "4 minus 1 leaves 3 birds." },
+            { topic: "Counting", prompt: "Which group has the most items?", choices: ["2 stars", "5 stars", "1 star", "3 stars"], answer: 1, explanation: "A group of 5 has the most items." },
+            { topic: "Counting", prompt: "How many sides does a triangle have?", choices: ["2", "3", "4", "5"], answer: 1, explanation: "A triangle has 3 sides." },
+
+            { topic: "Colors", prompt: "What color is the sky on a sunny day?", choices: ["Blue", "Green", "Purple", "Brown"], answer: 0, explanation: "The sky often looks blue on a sunny day." },
+            { topic: "Colors", prompt: "What color is a school bus most often?", choices: ["Pink", "Yellow", "Gray", "Blue"], answer: 1, explanation: "School buses are usually yellow." },
+            { topic: "Colors", prompt: "What color do you get when you think of grass?", choices: ["Green", "Red", "Black", "Orange"], answer: 0, explanation: "Grass is usually green." },
+            { topic: "Colors", prompt: "Which one is a warm color?", choices: ["Blue", "Purple", "Red", "Teal"], answer: 2, explanation: "Red is a warm color." },
+            { topic: "Colors", prompt: "What color is the center of a banana peel?", choices: ["Yellow", "Navy", "White", "Purple"], answer: 0, explanation: "Bananas are usually yellow." },
+
+            { topic: "Shapes", prompt: "Which shape is round like a ball?", choices: ["Square", "Triangle", "Circle", "Rectangle"], answer: 2, explanation: "A circle is round." },
+            { topic: "Shapes", prompt: "Which shape has 4 equal sides?", choices: ["Square", "Triangle", "Circle", "Oval"], answer: 0, explanation: "A square has 4 equal sides." },
+            { topic: "Shapes", prompt: "Which shape has 3 corners?", choices: ["Rectangle", "Circle", "Triangle", "Hexagon"], answer: 2, explanation: "A triangle has 3 corners." },
+            { topic: "Shapes", prompt: "Which shape looks like a stretched circle?", choices: ["Oval", "Square", "Star", "Cube"], answer: 0, explanation: "An oval looks like a stretched circle." },
+            { topic: "Shapes", prompt: "Which shape has 4 sides but two are long and two are short?", choices: ["Circle", "Rectangle", "Triangle", "Oval"], answer: 1, explanation: "A rectangle has 4 sides, with opposite sides the same length." },
+
+            { topic: "Rhyming", prompt: "Which word rhymes with CAT?", choices: ["Sun", "Hat", "Pig", "Bed"], answer: 1, explanation: "Cat and hat rhyme." },
+            { topic: "Rhyming", prompt: "Which word rhymes with LOG?", choices: ["Dog", "Leaf", "Moon", "Fish"], answer: 0, explanation: "Log and dog rhyme." },
+            { topic: "Rhyming", prompt: "Which word rhymes with BEE?", choices: ["Tree", "Ball", "Duck", "Rain"], answer: 0, explanation: "Bee and tree rhyme." },
+            { topic: "Rhyming", prompt: "Which word rhymes with STAR?", choices: ["Car", "Pen", "Book", "Hill"], answer: 0, explanation: "Star and car rhyme." },
+            { topic: "Rhyming", prompt: "Which word rhymes with CAKE?", choices: ["Lake", "Cup", "Ball", "Mouse"], answer: 0, explanation: "Cake and lake rhyme." },
+
+            { topic: "Patterns", prompt: "What comes next in the pattern? Red, blue, red, blue, ...", choices: ["Green", "Blue", "Red", "Yellow"], answer: 1, explanation: "The colors repeat red, blue, red, blue." },
+            { topic: "Patterns", prompt: "What comes next? 1, 2, 1, 2, ...", choices: ["1", "2", "3", "4"], answer: 0, explanation: "The pattern repeats 1, 2." },
+            { topic: "Patterns", prompt: "What comes next? Circle, square, circle, square, ...", choices: ["Triangle", "Circle", "Square", "Star"], answer: 2, explanation: "The shape pattern repeats circle, square." },
+            { topic: "Patterns", prompt: "What comes next? Clap, stomp, clap, stomp, ...", choices: ["Jump", "Clap", "Stomp", "Sit"], answer: 1, explanation: "The action pattern repeats clap, stomp." },
+            { topic: "Patterns", prompt: "What comes next? Small, big, small, big, ...", choices: ["Big", "Small", "Round", "Tall"], answer: 0, explanation: "The size pattern repeats small, big." },
+
+            { topic: "Science", prompt: "Which one is a living thing?", choices: ["Rock", "Tree", "Chair", "Toy car"], answer: 1, explanation: "A tree is a living thing." },
+            { topic: "Science", prompt: "What do plants need to grow?", choices: ["Moonlight only", "Water", "Television", "Shoes"], answer: 1, explanation: "Plants need water to help them grow." },
+            { topic: "Science", prompt: "Which season is usually coldest?", choices: ["Summer", "Spring", "Winter", "Fall"], answer: 2, explanation: "Winter is usually the coldest season." },
+            { topic: "Science", prompt: "What shines in the daytime?", choices: ["Moon", "Starfish", "Sun", "Flashlight"], answer: 2, explanation: "The sun shines during the day." },
+            { topic: "Science", prompt: "Which weather might need an umbrella?", choices: ["Rainy", "Sunny", "Windy", "Cloudy"], answer: 0, explanation: "Umbrellas help keep us dry in rainy weather." },
+
+            { topic: "Community", prompt: "Who helps put out fires?", choices: ["Chef", "Firefighter", "Pilot", "Farmer"], answer: 1, explanation: "A firefighter helps put out fires." },
+            { topic: "Community", prompt: "Where do children usually go to learn with a teacher?", choices: ["School", "Garage", "Beach", "Train station"], answer: 0, explanation: "Children often go to school to learn." },
+            { topic: "Community", prompt: "What should you do when the traffic light is red?", choices: ["Go fast", "Stop", "Jump", "Sing"], answer: 1, explanation: "Red means stop." },
+            { topic: "Community", prompt: "Which helper can check if you are healthy?", choices: ["Doctor", "Painter", "Mail carrier", "Baker"], answer: 0, explanation: "A doctor helps keep people healthy." },
+            { topic: "Community", prompt: "What do we use to say hello in a kind way?", choices: ["A smile", "A shout", "A stomp", "A frown"], answer: 0, explanation: "A smile is a kind way to greet someone." },
+
+            { topic: "Time", prompt: "Which part of the day comes first?", choices: ["Night", "Morning", "Evening", "Bedtime"], answer: 1, explanation: "Morning comes first in the day." },
+            { topic: "Time", prompt: "How many days are in one week?", choices: ["5", "6", "7", "8"], answer: 2, explanation: "There are 7 days in one week." },
+            { topic: "Time", prompt: "Which day comes after Monday?", choices: ["Sunday", "Friday", "Tuesday", "Saturday"], answer: 2, explanation: "Tuesday comes after Monday." },
+            { topic: "Time", prompt: "What do we usually do at bedtime?", choices: ["Eat lunch", "Go to sleep", "Ride the bus", "Play soccer"], answer: 1, explanation: "Bedtime is when we usually go to sleep." },
+            { topic: "Time", prompt: "Which tool helps tell time?", choices: ["Clock", "Pillow", "Spoon", "Crayon"], answer: 0, explanation: "A clock helps us tell time." }
+        ];
+
+        const state = {
+            currentIndex: 0,
+            score: 0,
+            answered: false
+        };
+
+        const screens = {
+            welcome: document.getElementById("welcome-screen"),
+            quiz: document.getElementById("quiz-screen"),
+            results: document.getElementById("results-screen")
+        };
+
+        const questionCounter = document.getElementById("question-counter");
+        const scoreCounter = document.getElementById("score-counter");
+        const topicCounter = document.getElementById("topic-counter");
+        const progressText = document.getElementById("progress-text");
+        const progressFill = document.getElementById("progress-fill");
+        const topicPill = document.getElementById("topic-pill");
+        const questionText = document.getElementById("question-text");
+        const choicesWrap = document.getElementById("choices");
+        const feedback = document.getElementById("feedback");
+        const feedbackText = document.getElementById("feedback-text");
+        const finalScore = document.getElementById("final-score");
+        const resultMessage = document.getElementById("result-message");
+        const resultSummary = document.getElementById("result-summary");
+
+        function showScreen(name) {
+            Object.values(screens).forEach((screen) => screen.classList.remove("active"));
+            screens[name].classList.add("active");
+        }
+
+        function startQuiz() {
+            state.currentIndex = 0;
+            state.score = 0;
+            state.answered = false;
+            scoreCounter.textContent = "0";
+            showScreen("quiz");
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            state.answered = false;
+            feedback.classList.add("hide");
+            feedbackText.textContent = "";
+            feedbackText.className = "feedback-text";
+
+            const current = questions[state.currentIndex];
+            const progress = Math.round((state.currentIndex / questions.length) * 100);
+
+            questionCounter.textContent = `${state.currentIndex + 1} / ${questions.length}`;
+            scoreCounter.textContent = String(state.score);
+            topicCounter.textContent = current.topic;
+            progressText.textContent = `${progress}%`;
+            progressFill.style.width = `${progress}%`;
+            topicPill.textContent = current.topic;
+            questionText.textContent = current.prompt;
+            choicesWrap.innerHTML = "";
+
+            current.choices.forEach((choice, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "choice";
+                button.textContent = choice;
+                button.addEventListener("click", () => selectAnswer(index, button));
+                choicesWrap.appendChild(button);
+            });
+        }
+
+        function selectAnswer(selectedIndex, selectedButton) {
+            if (state.answered) {
+                return;
+            }
+
+            state.answered = true;
+            const current = questions[state.currentIndex];
+            const buttons = [...document.querySelectorAll(".choice")];
+            const isCorrect = selectedIndex === current.answer;
+
+            buttons.forEach((button, index) => {
+                button.disabled = true;
+
+                if (index === current.answer) {
+                    button.classList.add("correct");
+                }
+
+                if (index === selectedIndex && !isCorrect) {
+                    button.classList.add("wrong");
+                }
+            });
+
+            if (isCorrect) {
+                state.score += 1;
+                scoreCounter.textContent = String(state.score);
+                feedbackText.textContent = `Great job! ${current.explanation}`;
+                feedbackText.classList.add("good");
+            } else {
+                selectedButton.classList.add("wrong");
+                feedbackText.textContent = `Nice try! ${current.explanation}`;
+                feedbackText.classList.add("try");
+            }
+
+            feedback.classList.remove("hide");
+        }
+
+        function nextQuestion() {
+            state.currentIndex += 1;
+
+            if (state.currentIndex >= questions.length) {
+                showResults();
+                return;
+            }
+
+            renderQuestion();
+        }
+
+        function showResults() {
+            const percent = Math.round((state.score / questions.length) * 100);
+            finalScore.textContent = `${state.score}/${questions.length}`;
+            resultSummary.textContent = `You answered ${percent}% of the questions correctly. Keep practicing a little every day and learning will get even stronger.`;
+
+            if (percent >= 90) {
+                resultMessage.textContent = "Amazing work! You are shining bright.";
+            } else if (percent >= 70) {
+                resultMessage.textContent = "Fantastic job! You know so many kindergarten skills.";
+            } else if (percent >= 50) {
+                resultMessage.textContent = "Nice learning! A little more practice will help even more.";
+            } else {
+                resultMessage.textContent = "Good trying! Every question is a chance to learn.";
+            }
+
+            progressText.textContent = "100%";
+            progressFill.style.width = "100%";
+            showScreen("results");
+        }
+
+        document.getElementById("start-button").addEventListener("click", startQuiz);
+        document.getElementById("next-button").addEventListener("click", nextQuestion);
+        document.getElementById("restart-button").addEventListener("click", startQuiz);
+    </script>
 </body>
 </html>
