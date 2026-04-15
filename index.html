@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kindergarten Quiz Adventure</title>
+    <title>2nd Grade Quiz Adventure</title>
     <style>
         :root {
             --sky: #bfe9ff;
@@ -480,11 +480,11 @@
                 <div class="hero-top">
                     <div class="badge">
                         <span class="badge-dot"></span>
-                        Kindergarten Quiz Adventure
+                        2nd Grade Quiz Adventure
                     </div>
                 </div>
-                <h1>Learn, smile, and answer 50 fun school questions.</h1>
-                <p class="subtitle">This playful web app helps young children practice kindergarten skills like letters, numbers, colors, shapes, rhyming, patterns, weather, and more.</p>
+                <h1>Learn, think, and answer 50 awesome 2nd grade questions.</h1>
+                <p class="subtitle">This playful web app helps kids practice 2nd grade skills like reading, place value, time, money, science, maps, and more.</p>
             </section>
 
             <section class="panel">
@@ -495,7 +495,7 @@
                         <div class="feature-row">
                             <div class="feature">
                                 <strong>50 Questions</strong>
-                                Practice important kindergarten topics.
+                                Practice important 2nd grade topics.
                             </div>
                             <div class="feature">
                                 <strong>Easy Choices</strong>
@@ -567,65 +567,65 @@
 
     <script>
         const questions = [
-            { topic: "Letters", prompt: "Which letter comes first in the alphabet?", choices: ["A", "M", "S", "Z"], answer: 0, explanation: "A is the first letter in the alphabet." },
-            { topic: "Letters", prompt: "Which letter comes right after B?", choices: ["D", "C", "A", "F"], answer: 1, explanation: "The alphabet goes A, B, C." },
-            { topic: "Letters", prompt: "Which letter is a vowel?", choices: ["T", "E", "R", "N"], answer: 1, explanation: "E is one of the vowels: A, E, I, O, U." },
-            { topic: "Letters", prompt: "Which word starts with the letter S?", choices: ["Sun", "Ball", "Cat", "Dog"], answer: 0, explanation: "Sun begins with the letter S." },
-            { topic: "Letters", prompt: "Which letter is in the middle of the word CAT?", choices: ["C", "A", "T", "P"], answer: 1, explanation: "The middle letter in CAT is A." },
+            { topic: "Reading", prompt: "Which word is a noun?", choices: ["run", "happy", "dog", "quickly"], answer: 2, explanation: "A noun names a person, place, animal, or thing. Dog is a noun." },
+            { topic: "Reading", prompt: "Which sentence ends with a question mark?", choices: ["I like pizza.", "Please close the door.", "Where is my backpack?", "What a fun day!"], answer: 2, explanation: "Questions end with a question mark." },
+            { topic: "Reading", prompt: "Which word means the opposite of cold?", choices: ["freezing", "warm", "chilly", "icy"], answer: 1, explanation: "Warm is the opposite of cold." },
+            { topic: "Reading", prompt: "Pick the word with a long a sound.", choices: ["cat", "map", "cake", "bag"], answer: 2, explanation: "Cake has the long a sound (a_e)." },
+            { topic: "Reading", prompt: "Which word is spelled correctly?", choices: ["frend", "freind", "friend", "frind"], answer: 2, explanation: "Friend is the correct spelling." },
 
-            { topic: "Numbers", prompt: "Which number is bigger?", choices: ["2", "9", "1", "4"], answer: 1, explanation: "9 is greater than 2, 1, and 4." },
-            { topic: "Numbers", prompt: "What number comes after 7?", choices: ["6", "8", "9", "5"], answer: 1, explanation: "After 7 comes 8." },
-            { topic: "Numbers", prompt: "How many apples are in a pair?", choices: ["1", "2", "3", "4"], answer: 1, explanation: "A pair means 2." },
-            { topic: "Numbers", prompt: "Which number is the smallest?", choices: ["5", "3", "7", "9"], answer: 1, explanation: "3 is the smallest number in the group." },
-            { topic: "Numbers", prompt: "What number comes before 10?", choices: ["8", "11", "9", "7"], answer: 2, explanation: "The number before 10 is 9." },
+            { topic: "Math Facts", prompt: "What is 7 + 6?", choices: ["12", "13", "14", "15"], answer: 1, explanation: "7 + 6 = 13." },
+            { topic: "Math Facts", prompt: "What is 15 - 8?", choices: ["5", "6", "7", "8"], answer: 2, explanation: "15 - 8 = 7." },
+            { topic: "Math Facts", prompt: "What is 4 × 5?", choices: ["9", "15", "20", "25"], answer: 2, explanation: "4 groups of 5 equals 20." },
+            { topic: "Math Facts", prompt: "What is 18 + 2?", choices: ["19", "20", "21", "22"], answer: 1, explanation: "18 + 2 = 20." },
+            { topic: "Math Facts", prompt: "What is 30 - 9?", choices: ["19", "20", "21", "22"], answer: 2, explanation: "30 - 9 = 21." },
 
-            { topic: "Counting", prompt: "If you have 3 blocks and get 1 more, how many blocks do you have?", choices: ["2", "3", "4", "5"], answer: 2, explanation: "3 plus 1 equals 4." },
-            { topic: "Counting", prompt: "How many fingers are on one hand?", choices: ["3", "4", "5", "6"], answer: 2, explanation: "One hand has 5 fingers." },
-            { topic: "Counting", prompt: "If 1 bird flies away from 4 birds, how many birds are left?", choices: ["2", "3", "4", "5"], answer: 1, explanation: "4 minus 1 leaves 3 birds." },
-            { topic: "Counting", prompt: "Which group has the most items?", choices: ["2 stars", "5 stars", "1 star", "3 stars"], answer: 1, explanation: "A group of 5 has the most items." },
-            { topic: "Counting", prompt: "How many sides does a triangle have?", choices: ["2", "3", "4", "5"], answer: 1, explanation: "A triangle has 3 sides." },
+            { topic: "Place Value", prompt: "In 47, what digit is in the tens place?", choices: ["4", "7", "47", "0"], answer: 0, explanation: "In 47, the 4 means 4 tens." },
+            { topic: "Place Value", prompt: "How many ones are in 63?", choices: ["6", "3", "63", "0"], answer: 1, explanation: "In 63, the ones digit is 3." },
+            { topic: "Place Value", prompt: "Which number is greater?", choices: ["58", "85", "55", "48"], answer: 1, explanation: "85 is the greatest number shown." },
+            { topic: "Place Value", prompt: "Which expanded form matches 72?", choices: ["70 + 2", "7 + 2", "60 + 12", "72 + 0"], answer: 0, explanation: "72 is 7 tens and 2 ones: 70 + 2." },
+            { topic: "Place Value", prompt: "What number is 9 tens and 4 ones?", choices: ["49", "94", "904", "13"], answer: 1, explanation: "9 tens (90) plus 4 ones is 94." },
 
-            { topic: "Colors", prompt: "What color is the sky on a sunny day?", choices: ["Blue", "Green", "Purple", "Brown"], answer: 0, explanation: "The sky often looks blue on a sunny day." },
-            { topic: "Colors", prompt: "What color is a school bus most often?", choices: ["Pink", "Yellow", "Gray", "Blue"], answer: 1, explanation: "School buses are usually yellow." },
-            { topic: "Colors", prompt: "What color do you get when you think of grass?", choices: ["Green", "Red", "Black", "Orange"], answer: 0, explanation: "Grass is usually green." },
-            { topic: "Colors", prompt: "Which one is a warm color?", choices: ["Blue", "Purple", "Red", "Teal"], answer: 2, explanation: "Red is a warm color." },
-            { topic: "Colors", prompt: "What color is the center of a banana peel?", choices: ["Yellow", "Navy", "White", "Purple"], answer: 0, explanation: "Bananas are usually yellow." },
+            { topic: "Word Problems", prompt: "Lia has 12 stickers and gets 7 more. How many now?", choices: ["17", "18", "19", "20"], answer: 2, explanation: "12 + 7 = 19 stickers." },
+            { topic: "Word Problems", prompt: "A class has 20 pencils. 6 are used. How many left?", choices: ["12", "13", "14", "15"], answer: 2, explanation: "20 - 6 = 14 pencils left." },
+            { topic: "Word Problems", prompt: "There are 5 bags with 2 apples each. How many apples?", choices: ["7", "8", "10", "12"], answer: 2, explanation: "5 groups of 2 equals 10 apples." },
+            { topic: "Word Problems", prompt: "Sam read 9 pages on Monday and 9 on Tuesday. Total?", choices: ["16", "17", "18", "19"], answer: 2, explanation: "9 + 9 = 18 pages." },
+            { topic: "Word Problems", prompt: "You have 25 cents and spend 10 cents. How much remains?", choices: ["10 cents", "15 cents", "20 cents", "35 cents"], answer: 1, explanation: "25 cents - 10 cents = 15 cents." },
 
-            { topic: "Shapes", prompt: "Which shape is round like a ball?", choices: ["Square", "Triangle", "Circle", "Rectangle"], answer: 2, explanation: "A circle is round." },
-            { topic: "Shapes", prompt: "Which shape has 4 equal sides?", choices: ["Square", "Triangle", "Circle", "Oval"], answer: 0, explanation: "A square has 4 equal sides." },
-            { topic: "Shapes", prompt: "Which shape has 3 corners?", choices: ["Rectangle", "Circle", "Triangle", "Hexagon"], answer: 2, explanation: "A triangle has 3 corners." },
-            { topic: "Shapes", prompt: "Which shape looks like a stretched circle?", choices: ["Oval", "Square", "Star", "Cube"], answer: 0, explanation: "An oval looks like a stretched circle." },
-            { topic: "Shapes", prompt: "Which shape has 4 sides but two are long and two are short?", choices: ["Circle", "Rectangle", "Triangle", "Oval"], answer: 1, explanation: "A rectangle has 4 sides, with opposite sides the same length." },
+            { topic: "Time", prompt: "How many minutes are in 1 hour?", choices: ["30", "45", "60", "100"], answer: 2, explanation: "1 hour equals 60 minutes." },
+            { topic: "Time", prompt: "If school starts at 8:00 and ends at 3:00, how many hours?", choices: ["6", "7", "8", "9"], answer: 1, explanation: "From 8:00 to 3:00 is 7 hours." },
+            { topic: "Time", prompt: "What time is half past 4?", choices: ["4:15", "4:30", "5:30", "3:30"], answer: 1, explanation: "Half past 4 means 4:30." },
+            { topic: "Time", prompt: "Which comes first in a day?", choices: ["Evening", "Afternoon", "Morning", "Night"], answer: 2, explanation: "Morning comes first." },
+            { topic: "Time", prompt: "How many days are in two weeks?", choices: ["10", "12", "14", "16"], answer: 2, explanation: "Two weeks is 14 days." },
 
-            { topic: "Rhyming", prompt: "Which word rhymes with CAT?", choices: ["Sun", "Hat", "Pig", "Bed"], answer: 1, explanation: "Cat and hat rhyme." },
-            { topic: "Rhyming", prompt: "Which word rhymes with LOG?", choices: ["Dog", "Leaf", "Moon", "Fish"], answer: 0, explanation: "Log and dog rhyme." },
-            { topic: "Rhyming", prompt: "Which word rhymes with BEE?", choices: ["Tree", "Ball", "Duck", "Rain"], answer: 0, explanation: "Bee and tree rhyme." },
-            { topic: "Rhyming", prompt: "Which word rhymes with STAR?", choices: ["Car", "Pen", "Book", "Hill"], answer: 0, explanation: "Star and car rhyme." },
-            { topic: "Rhyming", prompt: "Which word rhymes with CAKE?", choices: ["Lake", "Cup", "Ball", "Mouse"], answer: 0, explanation: "Cake and lake rhyme." },
+            { topic: "Money", prompt: "How much is one quarter worth?", choices: ["10 cents", "25 cents", "50 cents", "1 cent"], answer: 1, explanation: "A quarter is worth 25 cents." },
+            { topic: "Money", prompt: "What coin is worth 10 cents?", choices: ["Nickel", "Dime", "Penny", "Quarter"], answer: 1, explanation: "A dime is worth 10 cents." },
+            { topic: "Money", prompt: "If you have 2 dimes, how much money is that?", choices: ["12 cents", "15 cents", "20 cents", "25 cents"], answer: 2, explanation: "Two dimes equal 20 cents." },
+            { topic: "Money", prompt: "Which is the greatest amount?", choices: ["15 cents", "30 cents", "45 cents", "50 cents"], answer: 3, explanation: "50 cents is the greatest amount listed." },
+            { topic: "Money", prompt: "What is 3 nickels worth?", choices: ["10 cents", "15 cents", "20 cents", "30 cents"], answer: 1, explanation: "Each nickel is 5 cents, so 3 nickels is 15 cents." },
 
-            { topic: "Patterns", prompt: "What comes next in the pattern? Red, blue, red, blue, ...", choices: ["Green", "Blue", "Red", "Yellow"], answer: 1, explanation: "The colors repeat red, blue, red, blue." },
-            { topic: "Patterns", prompt: "What comes next? 1, 2, 1, 2, ...", choices: ["1", "2", "3", "4"], answer: 0, explanation: "The pattern repeats 1, 2." },
-            { topic: "Patterns", prompt: "What comes next? Circle, square, circle, square, ...", choices: ["Triangle", "Circle", "Square", "Star"], answer: 2, explanation: "The shape pattern repeats circle, square." },
-            { topic: "Patterns", prompt: "What comes next? Clap, stomp, clap, stomp, ...", choices: ["Jump", "Clap", "Stomp", "Sit"], answer: 1, explanation: "The action pattern repeats clap, stomp." },
-            { topic: "Patterns", prompt: "What comes next? Small, big, small, big, ...", choices: ["Big", "Small", "Round", "Tall"], answer: 0, explanation: "The size pattern repeats small, big." },
+            { topic: "Science", prompt: "Which planet do we live on?", choices: ["Mars", "Earth", "Jupiter", "Venus"], answer: 1, explanation: "We live on Earth." },
+            { topic: "Science", prompt: "What do plants need to make food?", choices: ["Sunlight", "Shoes", "Sandwiches", "Televisions"], answer: 0, explanation: "Plants need sunlight to make food." },
+            { topic: "Science", prompt: "Which state of matter is water in when it is ice?", choices: ["Liquid", "Solid", "Gas", "Plasma"], answer: 1, explanation: "Ice is water in solid form." },
+            { topic: "Science", prompt: "What is the main star in our solar system?", choices: ["Moon", "Sun", "Earth", "Comet"], answer: 1, explanation: "The sun is the star in our solar system." },
+            { topic: "Science", prompt: "Which animal is a mammal?", choices: ["Frog", "Shark", "Dolphin", "Eagle"], answer: 2, explanation: "Dolphins are mammals." },
 
-            { topic: "Science", prompt: "Which one is a living thing?", choices: ["Rock", "Tree", "Chair", "Toy car"], answer: 1, explanation: "A tree is a living thing." },
-            { topic: "Science", prompt: "What do plants need to grow?", choices: ["Moonlight only", "Water", "Television", "Shoes"], answer: 1, explanation: "Plants need water to help them grow." },
-            { topic: "Science", prompt: "Which season is usually coldest?", choices: ["Summer", "Spring", "Winter", "Fall"], answer: 2, explanation: "Winter is usually the coldest season." },
-            { topic: "Science", prompt: "What shines in the daytime?", choices: ["Moon", "Starfish", "Sun", "Flashlight"], answer: 2, explanation: "The sun shines during the day." },
-            { topic: "Science", prompt: "Which weather might need an umbrella?", choices: ["Rainy", "Sunny", "Windy", "Cloudy"], answer: 0, explanation: "Umbrellas help keep us dry in rainy weather." },
+            { topic: "Social Studies", prompt: "What country is this quiz designed for in school terms?", choices: ["Brazil", "United States", "Japan", "Kenya"], answer: 1, explanation: "This quiz follows common U.S. 2nd grade topics." },
+            { topic: "Social Studies", prompt: "Who leads a city?", choices: ["Mayor", "Coach", "Chef", "Pilot"], answer: 0, explanation: "A mayor helps lead a city." },
+            { topic: "Social Studies", prompt: "What map tool shows the meaning of symbols?", choices: ["Scale", "Compass rose", "Key/legend", "Title"], answer: 2, explanation: "The key or legend explains map symbols." },
+            { topic: "Social Studies", prompt: "Which direction is opposite of north?", choices: ["East", "West", "South", "Up"], answer: 2, explanation: "South is opposite north." },
+            { topic: "Social Studies", prompt: "Why do people have rules at school?", choices: ["To stay safe and fair", "To make things confusing", "To stop learning", "To waste time"], answer: 0, explanation: "Rules help everyone stay safe and treat others fairly." },
 
-            { topic: "Community", prompt: "Who helps put out fires?", choices: ["Chef", "Firefighter", "Pilot", "Farmer"], answer: 1, explanation: "A firefighter helps put out fires." },
-            { topic: "Community", prompt: "Where do children usually go to learn with a teacher?", choices: ["School", "Garage", "Beach", "Train station"], answer: 0, explanation: "Children often go to school to learn." },
-            { topic: "Community", prompt: "What should you do when the traffic light is red?", choices: ["Go fast", "Stop", "Jump", "Sing"], answer: 1, explanation: "Red means stop." },
-            { topic: "Community", prompt: "Which helper can check if you are healthy?", choices: ["Doctor", "Painter", "Mail carrier", "Baker"], answer: 0, explanation: "A doctor helps keep people healthy." },
-            { topic: "Community", prompt: "What do we use to say hello in a kind way?", choices: ["A smile", "A shout", "A stomp", "A frown"], answer: 0, explanation: "A smile is a kind way to greet someone." },
+            { topic: "Grammar", prompt: "Choose the correct sentence.", choices: ["she likes math.", "She likes math.", "She like math.", "she like math"], answer: 1, explanation: "Sentences begin with a capital letter and use correct verbs." },
+            { topic: "Grammar", prompt: "Which word is a verb?", choices: ["jump", "table", "yellow", "quiet"], answer: 0, explanation: "A verb is an action word, like jump." },
+            { topic: "Grammar", prompt: "Pick the proper noun.", choices: ["city", "teacher", "Maria", "school"], answer: 2, explanation: "Maria is a specific name, so it is a proper noun." },
+            { topic: "Grammar", prompt: "Which punctuation ends an excited sentence?", choices: [".", "?", "!", ","], answer: 2, explanation: "An exclamation mark shows excitement." },
+            { topic: "Grammar", prompt: "Which is the best linking word for sequence?", choices: ["First", "Because", "Under", "Very"], answer: 0, explanation: "First is often used to show the start of steps." },
 
-            { topic: "Time", prompt: "Which part of the day comes first?", choices: ["Night", "Morning", "Evening", "Bedtime"], answer: 1, explanation: "Morning comes first in the day." },
-            { topic: "Time", prompt: "How many days are in one week?", choices: ["5", "6", "7", "8"], answer: 2, explanation: "There are 7 days in one week." },
-            { topic: "Time", prompt: "Which day comes after Monday?", choices: ["Sunday", "Friday", "Tuesday", "Saturday"], answer: 2, explanation: "Tuesday comes after Monday." },
-            { topic: "Time", prompt: "What do we usually do at bedtime?", choices: ["Eat lunch", "Go to sleep", "Ride the bus", "Play soccer"], answer: 1, explanation: "Bedtime is when we usually go to sleep." },
-            { topic: "Time", prompt: "Which tool helps tell time?", choices: ["Clock", "Pillow", "Spoon", "Crayon"], answer: 0, explanation: "A clock helps us tell time." }
+            { topic: "Logic", prompt: "If all squares are rectangles, is every rectangle a square?", choices: ["Yes, always", "No, not always", "Only on Fridays", "Only if it is blue"], answer: 1, explanation: "Squares are a special type of rectangle, but many rectangles are not squares." },
+            { topic: "Logic", prompt: "What comes next: 2, 4, 6, 8, ...", choices: ["9", "10", "11", "12"], answer: 1, explanation: "This pattern adds 2 each time, so next is 10." },
+            { topic: "Logic", prompt: "Which item does NOT belong?", choices: ["Triangle", "Circle", "Banana", "Square"], answer: 2, explanation: "Banana is a fruit, while the others are shapes." },
+            { topic: "Logic", prompt: "If today is Wednesday, what day is tomorrow?", choices: ["Tuesday", "Thursday", "Friday", "Monday"], answer: 1, explanation: "The day after Wednesday is Thursday." },
+            { topic: "Logic", prompt: "A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How much is the ball?", choices: ["5 cents", "10 cents", "50 cents", "55 cents"], answer: 0, explanation: "If the ball is 5 cents, the bat is $1.05, and together they are $1.10." }
         ];
 
         const state = {
@@ -751,7 +751,7 @@
             if (percent >= 90) {
                 resultMessage.textContent = "Amazing work! You are shining bright.";
             } else if (percent >= 70) {
-                resultMessage.textContent = "Fantastic job! You know so many kindergarten skills.";
+                resultMessage.textContent = "Fantastic job! You know so many 2nd grade skills.";
             } else if (percent >= 50) {
                 resultMessage.textContent = "Nice learning! A little more practice will help even more.";
             } else {
