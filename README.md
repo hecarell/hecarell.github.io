@@ -1,43 +1,44 @@
-# Tic Tac Toe Game
+# Helicopter Game
 
-A modern, interactive Tic Tac Toe game built with HTML, CSS, and JavaScript.
+A classic arcade helicopter game built with HTML5 Canvas, CSS, and JavaScript.
 
 ## Features
 
-🎮 **Fully Functional Gameplay**
-- Two-player game (X vs O)
-- Real-time turn indicator
-- Win detection with all possible combinations
-- Draw detection
+🚁 **Addictive Gameplay**
+- Simple one-button controls (click or Space/Enter to jump)
+- Realistic gravity physics
+- Randomly generated obstacles
+- Smooth 60fps gameplay
 
-📊 **Statistics Tracking**
-- Track wins for X player
-- Track wins for O player
-- Track draws
-- Statistics persist using browser's localStorage
+📊 **Score Tracking**
+- Earn points by passing through obstacle gaps
+- High score saved using browser's localStorage
+- Real-time score display
+- New high score celebration
 
 🎨 **Modern UI**
 - Beautiful gradient background
-- Smooth animations and hover effects
-- Responsive design
-- Clear visual feedback
+- Canvas-based graphics
+- Smooth animations and transitions
+- Clear game over screen with statistics
 
 ## How to Play
 
-1. Click any empty cell to make your move
-2. Players alternate between X and O
-3. First player to get 3 in a row (horizontal, vertical, or diagonal) wins
-4. If all cells are filled with no winner, it's a draw
-5. Click "New Game" to start a fresh game
-6. Click "Reset Stats" to clear the win/loss statistics
+1. Click the "Start Game" button
+2. Click anywhere on the canvas or press Space/Enter to make the helicopter jump UP
+3. Navigate through the green pipe obstacles
+4. Avoid hitting the pipes or the ceiling/floor
+5. Earn 1 point for each pair of pipes you successfully pass through
+6. Beat your high score!
 
 ## Technologies Used
 
-- HTML5
-- CSS3 (Grid layout, animations, gradients)
+- HTML5 (Canvas API)
+- CSS3 (Gradients, animations)
 - Vanilla JavaScript (no dependencies)
-- LocalStorage API for stats persistence
+- RequestAnimationFrame for smooth 60fps gameplay
+- LocalStorage API for high score persistence
 
 ## Try It Out
 
-Open `index.html` in your web browser and start playing!
+Open `index.html` in your web browser and start flying!

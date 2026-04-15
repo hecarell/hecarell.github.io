@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe Game</title>
+    <title>Helicopter Game</title>
     <style>
         * {
             margin: 0;
@@ -12,69 +12,59 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .container {
             text-align: center;
             background: white;
             padding: 30px;
-            border-radius: 10px;
+            border-radius: 15px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         h1 {
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             font-size: 2.5em;
         }
 
-        .info {
-            font-size: 1.2em;
-            color: #666;
+        .game-info {
+            display: flex;
+            justify-content: space-around;
             margin-bottom: 20px;
-            height: 30px;
-        }
-
-        .game-board {
-            display: grid;
-            grid-template-columns: repeat(3, 100px);
-            grid-gap: 5px;
-            margin: 20px auto;
-            background: #333;
-            padding: 5px;
-            border-radius: 5px;
-        }
-
-        .cell {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border: none;
-            font-size: 2em;
-            font-weight: bold;
-            cursor: pointer;
+            font-size: 1.2em;
             color: #333;
-            transition: all 0.2s;
-            border-radius: 3px;
         }
 
-        .cell:hover {
-            background: #f0f0f0;
-            transform: scale(1.05);
+        .info-item {
+            font-weight: bold;
         }
 
-        .cell.x {
-            color: #667eea;
+        .info-label {
+            color: #666;
+            font-size: 0.9em;
+            display: block;
         }
 
-        .cell.o {
-            color: #764ba2;
+        #gameCanvas {
+            border: 3px solid #667eea;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #87ceeb 0%, #e0f6ff 100%);
+            display: block;
+            margin: 20px auto;
+            cursor: none;
+        }
+
+        .controls {
+            margin-top: 20px;
+            color: #666;
+            font-size: 1em;
         }
 
         .buttons {
@@ -85,187 +75,307 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 12px 30px;
             font-size: 1em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-reset-high-score {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-reset-high-score:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+        }
+
+        .game-over.show {
+            display: block;
+        }
+
+        .game-over h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .game-over p {
+            font-size: 1.2em;
+            margin: 10px 0;
+        }
+
+        .game-over button {
             background: #667eea;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #764ba2;
-        }
-
-        .stats {
             margin-top: 20px;
-            font-size: 1em;
-            color: #666;
         }
 
-        .stats p {
-            margin: 5px 0;
-        }
-
-        .winner {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #667eea;
-            animation: pulse 0.6s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+        .game-over button:hover {
+            background: #764ba2;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎮 Tic Tac Toe</h1>
-        <div class="info" id="info">Player X's Turn</div>
-        
-        <div class="game-board" id="gameBoard">
-            <button class="cell" data-index="0"></button>
-            <button class="cell" data-index="1"></button>
-            <button class="cell" data-index="2"></button>
-            <button class="cell" data-index="3"></button>
-            <button class="cell" data-index="4"></button>
-            <button class="cell" data-index="5"></button>
-            <button class="cell" data-index="6"></button>
-            <button class="cell" data-index="7"></button>
-            <button class="cell" data-index="8"></button>
+        <h1>🚁 Helicopter Game</h1>
+        <div class="game-info">
+            <div class="info-item">
+                <span class="info-label">Score</span>
+                <span id="score">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">High Score</span>
+                <span id="highScore">0</span>
+            </div>
         </div>
-
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div class="controls">
+            <p>Click or tap to make the helicopter go UP</p>
+        </div>
         <div class="buttons">
-            <button id="resetBtn">New Game</button>
-            <button id="statsBtn">Reset Stats</button>
-        </div>
-
-        <div class="stats">
-            <p>X Wins: <span id="xWins">0</span></p>
-            <p>O Wins: <span id="oWins">0</span></p>
-            <p>Draws: <span id="draws">0</span></p>
+            <button class="btn-start" id="startBtn">Start Game</button>
+            <button class="btn-reset-high-score" id="resetHighScoreBtn">Reset High Score</button>
         </div>
     </div>
 
+    <div class="game-over" id="gameOverScreen">
+        <h2>Game Over!</h2>
+        <p>Final Score: <span id="finalScore">0</span></p>
+        <p id="newHighScore" style="color: #ffd700; display: none;">🎉 New High Score! 🎉</p>
+        <button id="restartBtn">Play Again</button>
+    </div>
+
     <script>
-        const cells = document.querySelectorAll('.cell');
-        const infoDisplay = document.getElementById('info');
-        const resetBtn = document.getElementById('resetBtn');
-        const statsBtn = document.getElementById('statsBtn');
-        const xWinsDisplay = document.getElementById('xWins');
-        const oWinsDisplay = document.getElementById('oWins');
-        const drawsDisplay = document.getElementById('draws');
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const highScoreDisplay = document.getElementById('highScore');
+        const startBtn = document.getElementById('startBtn');
+        const resetHighScoreBtn = document.getElementById('resetHighScoreBtn');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const newHighScoreMsg = document.getElementById('newHighScore');
+        const restartBtn = document.getElementById('restartBtn');
 
-        let gameBoard = ['', '', '', '', '', '', '', '', ''];
-        let currentPlayer = 'X';
-        let gameActive = true;
-        let xWins = parseInt(localStorage.getItem('xWins')) || 0;
-        let oWins = parseInt(localStorage.getItem('oWins')) || 0;
-        let draws = parseInt(localStorage.getItem('draws')) || 0;
+        // Game variables
+        let helicopter = {
+            x: 50,
+            y: canvas.height / 2,
+            width: 40,
+            height: 30,
+            velocity: 0,
+            gravity: 0.5,
+            jumpPower: -10
+        };
 
-        const winningCombinations = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6]
-        ];
+        let obstacles = [];
+        let score = 0;
+        let gameRunning = false;
+        let gameActive = false;
+        let highScore = localStorage.getItem('helicopterHighScore') ? parseInt(localStorage.getItem('helicopterHighScore')) : 0;
 
-        function initGame() {
-            updateStats();
-            cells.forEach(cell => {
-                cell.addEventListener('click', handleCellClick);
-            });
-            resetBtn.addEventListener('click', resetGame);
-            statsBtn.addEventListener('click', resetStats);
+        const obstacleGap = 120;
+        const obstacleWidth = 50;
+        const obstacleSpeed = 5;
+
+        highScoreDisplay.textContent = highScore;
+
+        function drawHelicopter() {
+            // Body
+            ctx.fillStyle = '#ff6b6b';
+            ctx.fillRect(helicopter.x, helicopter.y, helicopter.width, helicopter.height);
+
+            // Cockpit
+            ctx.fillStyle = '#4a4a4a';
+            ctx.beginPath();
+            ctx.arc(helicopter.x + 15, helicopter.y + 10, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Rotor blades
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(helicopter.x + 20, helicopter.y - 5);
+            ctx.lineTo(helicopter.x + 20, helicopter.y - 20);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(helicopter.x + 15, helicopter.y - 12);
+            ctx.lineTo(helicopter.x + 25, helicopter.y - 12);
+            ctx.stroke();
         }
 
-        function handleCellClick(e) {
-            const index = e.target.getAttribute('data-index');
-            
-            if (gameBoard[index] !== '' || !gameActive) {
+        function drawObstacles() {
+            ctx.fillStyle = '#228b22';
+            obstacles.forEach(obstacle => {
+                // Top pipe
+                ctx.fillRect(obstacle.x, 0, obstacleWidth, obstacle.topHeight);
+                // Bottom pipe
+                ctx.fillRect(obstacle.x, obstacle.topHeight + obstacleGap, obstacleWidth, canvas.height - obstacle.topHeight - obstacleGap);
+
+                // Pipe edges for detail
+                ctx.strokeStyle = '#1a5a1a';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(obstacle.x, 0, obstacleWidth, obstacle.topHeight);
+                ctx.strokeRect(obstacle.x, obstacle.topHeight + obstacleGap, obstacleWidth, canvas.height - obstacle.topHeight - obstacleGap);
+            });
+        }
+
+        function updateGame() {
+            if (!gameRunning) return;
+
+            // Apply gravity
+            helicopter.velocity += helicopter.gravity;
+            helicopter.y += helicopter.velocity;
+
+            // Boundary collision
+            if (helicopter.y <= 0 || helicopter.y + helicopter.height >= canvas.height) {
+                endGame();
                 return;
             }
 
-            gameBoard[index] = currentPlayer;
-            e.target.textContent = currentPlayer;
-            e.target.classList.add(currentPlayer.toLowerCase());
+            // Move obstacles
+            obstacles.forEach(obstacle => {
+                obstacle.x -= obstacleSpeed;
+            });
 
-            checkGameStatus();
-        }
+            // Remove off-screen obstacles
+            obstacles = obstacles.filter(obstacle => obstacle.x + obstacleWidth > 0);
 
-        function checkGameStatus() {
-            let hasWinner = false;
+            // Add new obstacle
+            if (obstacles.length === 0 || obstacles[obstacles.length - 1].x < canvas.width - 150) {
+                obstacles.push({
+                    x: canvas.width,
+                    topHeight: Math.random() * (canvas.height - obstacleGap - 100) + 50
+                });
+            }
 
-            for (let combo of winningCombinations) {
-                const [a, b, c] = combo;
-                if (gameBoard[a] && gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c]) {
-                    hasWinner = true;
-                    infoDisplay.innerHTML = `<span class="winner">${currentPlayer} Wins! 🎉</span>`;
-                    gameActive = false;
-                    
-                    if (currentPlayer === 'X') {
-                        xWins++;
-                    } else {
-                        oWins++;
+            // Collision detection
+            obstacles.forEach(obstacle => {
+                if (helicopter.x + helicopter.width > obstacle.x &&
+                    helicopter.x < obstacle.x + obstacleWidth) {
+                    if (helicopter.y < obstacle.topHeight ||
+                        helicopter.y + helicopter.height > obstacle.topHeight + obstacleGap) {
+                        endGame();
                     }
-                    
-                    updateStats();
-                    return;
                 }
-            }
+            });
 
-            if (!gameBoard.includes('')) {
-                infoDisplay.textContent = "It's a Draw! 🤝";
-                gameActive = false;
-                draws++;
-                updateStats();
-                return;
-            }
-
-            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-            infoDisplay.textContent = `Player ${currentPlayer}'s Turn`;
-        }
-
-        function resetGame() {
-            gameBoard = ['', '', '', '', '', '', '', '', ''];
-            currentPlayer = 'X';
-            gameActive = true;
-            infoDisplay.textContent = "Player X's Turn";
-            
-            cells.forEach(cell => {
-                cell.textContent = '';
-                cell.className = 'cell';
+            // Score increment
+            obstacles.forEach(obstacle => {
+                if (!obstacle.scored && obstacle.x + obstacleWidth < helicopter.x) {
+                    score++;
+                    obstacle.scored = true;
+                    scoreDisplay.textContent = score;
+                }
             });
         }
 
-        function resetStats() {
-            if (confirm('Are you sure you want to reset all statistics?')) {
-                xWins = 0;
-                oWins = 0;
-                draws = 0;
-                updateStats();
+        function drawGame() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(135, 206, 235, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            drawObstacles();
+            drawHelicopter();
+        }
+
+        function gameLoop() {
+            updateGame();
+            drawGame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            helicopter = {
+                x: 50,
+                y: canvas.height / 2,
+                width: 40,
+                height: 30,
+                velocity: 0,
+                gravity: 0.5,
+                jumpPower: -10
+            };
+            obstacles = [];
+            score = 0;
+            gameRunning = true;
+            gameActive = true;
+            scoreDisplay.textContent = score;
+            gameOverScreen.classList.remove('show');
+            startBtn.textContent = 'Restart Game';
+        }
+
+        function endGame() {
+            gameRunning = false;
+            finalScoreDisplay.textContent = score;
+
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('helicopterHighScore', highScore);
+                highScoreDisplay.textContent = highScore;
+                newHighScoreMsg.style.display = 'block';
+            } else {
+                newHighScoreMsg.style.display = 'none';
             }
+
+            gameOverScreen.classList.add('show');
         }
 
-        function updateStats() {
-            localStorage.setItem('xWins', xWins);
-            localStorage.setItem('oWins', oWins);
-            localStorage.setItem('draws', draws);
-            
-            xWinsDisplay.textContent = xWins;
-            oWinsDisplay.textContent = oWins;
-            drawsDisplay.textContent = draws;
+        function resetHighScore() {
+            highScore = 0;
+            localStorage.setItem('helicopterHighScore', 0);
+            highScoreDisplay.textContent = 0;
         }
 
-        initGame();
+        // Event listeners
+        canvas.addEventListener('click', () => {
+            if (gameActive && gameRunning) {
+                helicopter.velocity = helicopter.jumpPower;
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if ((e.code === 'Space' || e.code === 'Enter') && gameActive && gameRunning) {
+                helicopter.velocity = helicopter.jumpPower;
+                e.preventDefault();
+            }
+        });
+
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', startGame);
+        resetHighScoreBtn.addEventListener('click', resetHighScore);
+
+        // Start game loop
+        gameLoop();
     </script>
 </body>
 </html>
