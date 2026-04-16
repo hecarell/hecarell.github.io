@@ -1,26 +1,26 @@
-# Kindergarten Quiz Adventure
+# 3rd Grade Quiz Quest
 
-A cheerful interactive web app for young children to practice important kindergarten skills through 50 multiple-choice questions.
+An interactive single-page website with 24 multiple-choice questions for 3rd grade learners.
 
 ## What It Covers
 
-- Letters and early reading
-- Numbers and counting
-- Colors and shapes
-- Rhyming and patterns
-- Basic science and weather
-- Community helpers and simple safety
-- Time and days of the week
+- Multiplication, addition, subtraction, and fractions
+- Reading comprehension and vocabulary
+- Grammar and sentence rules
+- Science concepts like plants, mammals, freezing, and gravity
+- Social studies topics like maps, laws, and government
+- Multi-step word problems
 
 ## Features
 
-- 50 kid-friendly questions
+- 24 3rd-grade-level questions
 - One-question-at-a-time quiz flow
-- Instant feedback after each answer
+- Instant answer checking
+- Detailed explanations after every question
 - Progress bar and score tracking
-- Final results screen with encouraging messages
+- Final score screen with encouragement
 - Single-file HTML, CSS, and JavaScript with no dependencies
 
 ## How to Use
 
-Open `index.html` in a web browser and press **Start the Quiz**.
+Open `index.html` in a web browser and click **Start the Quiz**.

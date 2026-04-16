@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2nd Grade Quiz Adventure</title>
+    <title>3rd Grade Quiz Quest</title>
     <style>
         :root {
-            --sky: #bfe9ff;
-            --sun: #ffd166;
-            --grass: #b8e986;
-            --leaf: #34a853;
-            --berry: #ff6b6b;
-            --ink: #16324f;
+            --paper: #fffdf7;
+            --ink: #17324d;
+            --navy: #214e7a;
+            --sky: #d9efff;
+            --gold: #f5b841;
+            --peach: #ffd8a8;
+            --mint: #cdeccf;
+            --coral: #ef7f6d;
             --card: rgba(255, 255, 255, 0.88);
-            --shadow: 0 18px 50px rgba(22, 50, 79, 0.18);
-            --correct: #1f9d55;
-            --wrong: #d64545;
-            --accent: #ff8c42;
+            --line: rgba(23, 50, 77, 0.12);
+            --good: #1f8a4d;
+            --bad: #b63d3d;
+            --shadow: 0 20px 50px rgba(23, 50, 77, 0.14);
         }
 
         * {
@@ -26,31 +28,28 @@
         body {
             margin: 0;
             min-height: 100vh;
-            font-family: "Avenir Next", "Trebuchet MS", "Gill Sans", sans-serif;
+            font-family: "Trebuchet MS", "Avenir Next", sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 30%),
-                radial-gradient(circle at top right, rgba(255, 209, 102, 0.5), rgba(255, 209, 102, 0) 24%),
-                linear-gradient(180deg, #9ddcff 0%, var(--sky) 42%, #dbf6ff 42%, #dbf6ff 100%);
-            overflow-x: hidden;
+                radial-gradient(circle at top left, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 26%),
+                linear-gradient(180deg, #8fc8f6 0%, #bfe4ff 28%, #f6f1e3 28%, #f6f1e3 100%);
         }
 
         body::before,
         body::after {
             content: "";
             position: fixed;
-            inset: auto;
-            z-index: 0;
             pointer-events: none;
+            z-index: 0;
         }
 
         body::before {
-            width: 260px;
-            height: 260px;
-            top: 32px;
-            right: 40px;
+            top: 28px;
+            right: 34px;
+            width: 180px;
+            height: 180px;
             border-radius: 50%;
-            background: radial-gradient(circle, #fff5b8 0%, var(--sun) 60%, rgba(255, 209, 102, 0.2) 74%, rgba(255, 209, 102, 0) 76%);
+            background: radial-gradient(circle, #fff1ae 0%, var(--gold) 58%, rgba(245, 184, 65, 0.08) 76%, rgba(245, 184, 65, 0) 77%);
         }
 
         body::after {
@@ -59,47 +58,39 @@
             bottom: 0;
             height: 150px;
             background:
-                radial-gradient(circle at 12% 100%, #77c76c 0 18%, rgba(0, 0, 0, 0) 19%),
-                radial-gradient(circle at 28% 100%, #7fd06e 0 22%, rgba(0, 0, 0, 0) 23%),
-                radial-gradient(circle at 48% 100%, #67bd5d 0 18%, rgba(0, 0, 0, 0) 19%),
-                radial-gradient(circle at 68% 100%, #82d57c 0 20%, rgba(0, 0, 0, 0) 21%),
-                radial-gradient(circle at 88% 100%, #73c866 0 19%, rgba(0, 0, 0, 0) 20%),
-                linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 30%, var(--grass) 31%, #93db74 100%);
+                radial-gradient(circle at 12% 100%, #6fbc72 0 16%, rgba(0, 0, 0, 0) 17%),
+                radial-gradient(circle at 34% 100%, #5baa60 0 18%, rgba(0, 0, 0, 0) 19%),
+                radial-gradient(circle at 58% 100%, #78c67a 0 16%, rgba(0, 0, 0, 0) 17%),
+                radial-gradient(circle at 84% 100%, #66b569 0 17%, rgba(0, 0, 0, 0) 18%),
+                linear-gradient(180deg, rgba(0, 0, 0, 0) 0, rgba(0, 0, 0, 0) 34%, #94d77e 35%, #77c464 100%);
         }
 
         .page {
             position: relative;
             z-index: 1;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
             padding: 24px;
         }
 
         .app {
-            width: min(920px, 100%);
+            width: min(980px, 100%);
             background: var(--card);
-            backdrop-filter: blur(12px);
-            border: 4px solid rgba(255, 255, 255, 0.75);
+            border: 3px solid rgba(255, 255, 255, 0.7);
             border-radius: 32px;
             box-shadow: var(--shadow);
             overflow: hidden;
+            backdrop-filter: blur(10px);
         }
 
         .hero {
-            padding: 28px 28px 18px;
+            padding: 28px 28px 20px;
             background:
-                linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(255, 240, 220, 0.9)),
+                linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 244, 225, 0.92)),
                 linear-gradient(135deg, #fff, #fff);
-        }
-
-        .hero-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
+            border-bottom: 1px solid var(--line);
         }
 
         .badge {
@@ -108,38 +99,96 @@
             gap: 10px;
             padding: 10px 16px;
             border-radius: 999px;
-            background: #fff;
-            font-weight: 700;
-            letter-spacing: 0.04em;
+            background: white;
+            color: #b6671d;
+            font-weight: 800;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
             text-transform: uppercase;
-            font-size: 0.78rem;
-            color: #cf5c36;
-            box-shadow: 0 10px 24px rgba(207, 92, 54, 0.14);
+            box-shadow: 0 10px 24px rgba(182, 103, 29, 0.12);
         }
 
         .badge-dot {
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #ff8c42, #ffd166);
+            background: linear-gradient(135deg, var(--gold), var(--coral));
         }
 
         h1 {
             margin: 16px 0 10px;
-            font-size: clamp(2.1rem, 4vw, 3.4rem);
-            line-height: 0.98;
-            letter-spacing: 0.01em;
+            font-size: clamp(2.2rem, 4vw, 3.6rem);
+            line-height: 1;
         }
 
         .subtitle {
-            max-width: 640px;
+            max-width: 700px;
             margin: 0;
-            font-size: 1.05rem;
-            line-height: 1.5;
+            font-size: 1.08rem;
+            line-height: 1.55;
         }
 
         .panel {
             padding: 24px 28px 30px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: rise 260ms ease;
+        }
+
+        .welcome-card,
+        .results-card,
+        .question-card {
+            border-radius: 28px;
+            background:
+                radial-gradient(circle at top right, rgba(245, 184, 65, 0.14), rgba(245, 184, 65, 0) 30%),
+                white;
+            box-shadow: 0 14px 30px rgba(23, 50, 77, 0.08);
+        }
+
+        .welcome-card,
+        .results-card {
+            padding: 30px 24px;
+            text-align: center;
+        }
+
+        .welcome h2,
+        .results h2 {
+            margin: 0 0 12px;
+            font-size: clamp(1.9rem, 3vw, 2.6rem);
+        }
+
+        .welcome p,
+        .results p {
+            max-width: 700px;
+            margin: 0 auto 18px;
+            font-size: 1.05rem;
+            line-height: 1.6;
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin: 26px 0;
+        }
+
+        .feature {
+            padding: 18px 16px;
+            border-radius: 22px;
+            background: #f7fbff;
+            box-shadow: 0 10px 22px rgba(23, 50, 77, 0.07);
+        }
+
+        .feature strong {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1rem;
         }
 
         .status-row {
@@ -150,26 +199,27 @@
         }
 
         .stat {
-            flex: 1 1 140px;
-            min-width: 140px;
+            flex: 1 1 160px;
+            min-width: 160px;
             padding: 14px 16px;
             border-radius: 20px;
             background: white;
-            box-shadow: 0 10px 24px rgba(22, 50, 79, 0.08);
+            box-shadow: 0 10px 24px rgba(23, 50, 77, 0.08);
         }
 
         .stat-label {
             display: block;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #5d758d;
             margin-bottom: 6px;
+            color: #5d7388;
+            font-size: 0.8rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         .stat-value {
-            font-size: 1.45rem;
-            font-weight: 800;
+            font-size: 1.4rem;
+            font-weight: 900;
         }
 
         .progress-wrap {
@@ -181,49 +231,43 @@
             justify-content: space-between;
             gap: 10px;
             margin-bottom: 10px;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .progress-bar {
             width: 100%;
             height: 16px;
             border-radius: 999px;
-            background: #e8f4fb;
+            background: #e5f1fb;
             overflow: hidden;
         }
 
         .progress-fill {
-            height: 100%;
             width: 0;
+            height: 100%;
             border-radius: inherit;
-            background: linear-gradient(90deg, #ff8c42, #ffd166, #7bd389);
+            background: linear-gradient(90deg, var(--coral), var(--gold), #79c97b);
             transition: width 280ms ease;
         }
 
         .question-card {
-            position: relative;
             padding: 26px;
-            border-radius: 28px;
-            background:
-                radial-gradient(circle at top right, rgba(255, 209, 102, 0.2), rgba(255, 209, 102, 0) 30%),
-                white;
-            box-shadow: 0 14px 30px rgba(22, 50, 79, 0.09);
         }
 
         .topic-pill {
             display: inline-block;
             padding: 8px 14px;
             border-radius: 999px;
-            background: #eef8ff;
-            color: #2a6c9b;
-            font-weight: 700;
+            background: #eef7ff;
+            color: var(--navy);
             font-size: 0.88rem;
+            font-weight: 800;
             margin-bottom: 14px;
         }
 
         .question-text {
             margin: 0 0 22px;
-            font-size: clamp(1.4rem, 2.6vw, 2rem);
+            font-size: clamp(1.45rem, 2.8vw, 2.1rem);
             line-height: 1.28;
         }
 
@@ -237,21 +281,21 @@
             border: none;
             border-radius: 22px;
             padding: 18px 16px;
-            text-align: left;
-            font: inherit;
-            font-size: 1.05rem;
-            font-weight: 700;
+            background: #f4faff;
             color: var(--ink);
-            background: #f5fbff;
+            font: inherit;
+            font-size: 1.02rem;
+            font-weight: 800;
+            text-align: left;
             cursor: pointer;
+            box-shadow: 0 8px 18px rgba(23, 50, 77, 0.08);
             transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
-            box-shadow: 0 8px 18px rgba(22, 50, 79, 0.08);
         }
 
         .choice:hover,
         .choice:focus-visible {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(22, 50, 79, 0.14);
+            box-shadow: 0 12px 24px rgba(23, 50, 77, 0.14);
             outline: none;
         }
 
@@ -260,130 +304,77 @@
         }
 
         .choice.correct {
-            background: rgba(31, 157, 85, 0.15);
-            color: #176941;
-            box-shadow: 0 10px 24px rgba(31, 157, 85, 0.18);
+            background: rgba(31, 138, 77, 0.14);
+            color: #18633c;
+            box-shadow: 0 10px 24px rgba(31, 138, 77, 0.18);
         }
 
         .choice.wrong {
-            background: rgba(214, 69, 69, 0.14);
-            color: #9f2f2f;
-            box-shadow: 0 10px 24px rgba(214, 69, 69, 0.16);
+            background: rgba(182, 61, 61, 0.12);
+            color: #8f2d2d;
+            box-shadow: 0 10px 24px rgba(182, 61, 61, 0.14);
         }
 
         .feedback {
-            min-height: 68px;
             margin-top: 18px;
-            padding: 16px 18px;
-            border-radius: 20px;
-            background: #eef8ff;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 14px;
-            flex-wrap: wrap;
+            padding: 18px;
+            border-radius: 22px;
+            background: #eef7ff;
         }
 
-        .feedback-text {
-            margin: 0;
-            font-size: 1rem;
-            line-height: 1.45;
-            font-weight: 700;
-        }
-
-        .feedback-text.good {
-            color: var(--correct);
-        }
-
-        .feedback-text.try {
-            color: var(--wrong);
-        }
-
-        .next-btn,
-        .start-btn,
-        .restart-btn {
-            border: none;
-            border-radius: 999px;
-            padding: 14px 22px;
-            font: inherit;
-            font-weight: 800;
-            font-size: 1rem;
-            color: white;
-            background: linear-gradient(135deg, #ff8c42, #ff6b6b);
-            cursor: pointer;
-            box-shadow: 0 14px 28px rgba(255, 107, 107, 0.3);
-            transition: transform 180ms ease, box-shadow 180ms ease;
-        }
-
-        .next-btn:hover,
-        .next-btn:focus-visible,
-        .start-btn:hover,
-        .start-btn:focus-visible,
-        .restart-btn:hover,
-        .restart-btn:focus-visible {
-            transform: translateY(-2px);
-            box-shadow: 0 18px 30px rgba(255, 107, 107, 0.35);
-            outline: none;
-        }
-
-        .screen {
+        .feedback.hide {
             display: none;
         }
 
-        .screen.active {
-            display: block;
-            animation: rise 260ms ease;
+        .feedback-text {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            line-height: 1.55;
+            font-weight: 800;
         }
 
-        .welcome,
-        .results {
-            text-align: center;
-            padding: 18px 4px 6px;
+        .feedback-text.good {
+            color: var(--good);
         }
 
-        .welcome-card,
-        .results-card {
-            padding: 30px 24px;
-            border-radius: 30px;
-            background:
-                radial-gradient(circle at top left, rgba(123, 211, 137, 0.2), rgba(123, 211, 137, 0) 30%),
-                radial-gradient(circle at top right, rgba(255, 209, 102, 0.22), rgba(255, 209, 102, 0) 32%),
-                white;
-            box-shadow: 0 14px 32px rgba(22, 50, 79, 0.1);
+        .feedback-text.try {
+            color: var(--bad);
         }
 
-        .welcome h2,
-        .results h2 {
-            margin-top: 0;
-            font-size: clamp(1.8rem, 3.2vw, 2.5rem);
-        }
-
-        .welcome p,
-        .results p {
-            max-width: 640px;
-            margin: 0 auto 18px;
-            font-size: 1.05rem;
+        .answer-line {
+            margin: 0 0 12px;
+            font-size: 1rem;
             line-height: 1.55;
         }
 
-        .feature-row {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 14px;
-            margin: 26px 0;
+        .explanation-box {
+            margin: 0 0 18px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: white;
+            border: 1px solid var(--line);
+            line-height: 1.6;
         }
 
-        .feature {
-            padding: 18px 14px;
-            border-radius: 22px;
-            background: #f6fbff;
-            box-shadow: 0 10px 22px rgba(22, 50, 79, 0.07);
-        }
-
-        .feature strong {
-            display: block;
-            margin-bottom: 8px;
+        .btn {
+            border: none;
+            border-radius: 999px;
+            padding: 14px 22px;
+            color: white;
+            font: inherit;
             font-size: 1rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ef7f6d, #f5b841);
+            cursor: pointer;
+            box-shadow: 0 14px 28px rgba(239, 127, 109, 0.28);
+            transition: transform 180ms ease, box-shadow 180ms ease;
+        }
+
+        .btn:hover,
+        .btn:focus-visible {
+            transform: translateY(-2px);
+            box-shadow: 0 18px 30px rgba(239, 127, 109, 0.34);
+            outline: none;
         }
 
         .big-score {
@@ -393,8 +384,8 @@
             display: grid;
             place-items: center;
             border-radius: 50%;
-            background: conic-gradient(from 180deg, #7bd389, #ffd166, #ff8c42, #7bd389);
-            box-shadow: 0 18px 38px rgba(22, 50, 79, 0.14);
+            background: conic-gradient(from 180deg, #79c97b, #f5b841, #ef7f6d, #79c97b);
+            box-shadow: 0 18px 38px rgba(23, 50, 77, 0.14);
         }
 
         .big-score-inner {
@@ -409,24 +400,20 @@
         }
 
         .big-score-number {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: 900;
             line-height: 1;
         }
 
         .big-score-label {
-            font-size: 0.96rem;
-            font-weight: 700;
-            color: #58708a;
+            color: #5d7388;
+            font-size: 0.95rem;
+            font-weight: 800;
         }
 
         .result-message {
-            font-size: 1.15rem;
-            font-weight: 700;
-        }
-
-        .hide {
-            display: none;
+            font-size: 1.14rem;
+            font-weight: 800;
         }
 
         @keyframes rise {
@@ -452,8 +439,8 @@
                 padding-right: 18px;
             }
 
-            .choices,
-            .feature-row {
+            .feature-row,
+            .choices {
                 grid-template-columns: 1fr;
             }
 
@@ -461,13 +448,7 @@
                 padding: 20px;
             }
 
-            .feedback {
-                align-items: stretch;
-            }
-
-            .next-btn,
-            .start-btn,
-            .restart-btn {
+            .btn {
                 width: 100%;
             }
         }
@@ -477,36 +458,34 @@
     <div class="page">
         <main class="app">
             <section class="hero">
-                <div class="hero-top">
-                    <div class="badge">
-                        <span class="badge-dot"></span>
-                        2nd Grade Quiz Adventure
-                    </div>
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    3rd Grade Quiz Quest
                 </div>
-                <h1>Learn, think, and answer 50 awesome 2nd grade questions.</h1>
-                <p class="subtitle">This playful web app helps kids practice 2nd grade skills like reading, place value, time, money, science, maps, and more.</p>
+                <h1>Practice 3rd grade skills with clear answers and explanations.</h1>
+                <p class="subtitle">This updated quiz uses 3rd-grade-level questions in math, reading, grammar, science, and social studies. Every question gives the correct answer and a detailed explanation so students can learn as they go.</p>
             </section>
 
             <section class="panel">
                 <div id="welcome-screen" class="screen welcome active">
                     <div class="welcome-card">
-                        <h2>Ready to play and learn?</h2>
-                        <p>Each question has multiple choices. Pick the best answer, get cheerful feedback, and see your score grow as you move through all 50 questions.</p>
+                        <h2>Ready for a smarter challenge?</h2>
+                        <p>Answer each multiple-choice question, then read the answer and explanation. The explanations are written to help a 3rd grader understand why the answer is correct, not just memorize it.</p>
                         <div class="feature-row">
                             <div class="feature">
-                                <strong>50 Questions</strong>
-                                Practice important 2nd grade topics.
+                                <strong>3rd Grade Topics</strong>
+                                Multiplication, reading, science, grammar, and more.
                             </div>
                             <div class="feature">
-                                <strong>Easy Choices</strong>
-                                Big buttons make answers simple to tap.
+                                <strong>Clear Answers</strong>
+                                Each question shows the correct answer after you choose.
                             </div>
                             <div class="feature">
-                                <strong>Happy Feedback</strong>
-                                Celebrate correct answers and keep trying.
+                                <strong>Detailed Help</strong>
+                                Explanations tell how to think through the problem.
                             </div>
                         </div>
-                        <button id="start-button" class="start-btn" type="button">Start the Quiz</button>
+                        <button id="start-button" class="btn" type="button">Start the Quiz</button>
                     </div>
                 </div>
 
@@ -514,7 +493,7 @@
                     <div class="status-row">
                         <div class="stat">
                             <span class="stat-label">Question</span>
-                            <span id="question-counter" class="stat-value">1 / 50</span>
+                            <span id="question-counter" class="stat-value">1 / 24</span>
                         </div>
                         <div class="stat">
                             <span class="stat-label">Score</span>
@@ -522,7 +501,7 @@
                         </div>
                         <div class="stat">
                             <span class="stat-label">Topic</span>
-                            <span id="topic-counter" class="stat-value">Letters</span>
+                            <span id="topic-counter" class="stat-value">Math</span>
                         </div>
                     </div>
 
@@ -537,12 +516,15 @@
                     </div>
 
                     <div class="question-card">
-                        <span id="topic-pill" class="topic-pill">Letters</span>
+                        <span id="topic-pill" class="topic-pill">Math</span>
                         <p id="question-text" class="question-text"></p>
                         <div id="choices" class="choices"></div>
+
                         <div id="feedback" class="feedback hide">
                             <p id="feedback-text" class="feedback-text"></p>
-                            <button id="next-button" class="next-btn" type="button">Next Question</button>
+                            <p id="answer-line" class="answer-line"></p>
+                            <div id="explanation-box" class="explanation-box"></div>
+                            <button id="next-button" class="btn" type="button">Next Question</button>
                         </div>
                     </div>
                 </div>
@@ -558,7 +540,7 @@
                         </div>
                         <p id="result-message" class="result-message"></p>
                         <p id="result-summary"></p>
-                        <button id="restart-button" class="restart-btn" type="button">Play Again</button>
+                        <button id="restart-button" class="btn" type="button">Try Again</button>
                     </div>
                 </div>
             </section>
@@ -567,65 +549,174 @@
 
     <script>
         const questions = [
-            { topic: "Reading", prompt: "Which word is a noun?", choices: ["run", "happy", "dog", "quickly"], answer: 2, explanation: "A noun names a person, place, animal, or thing. Dog is a noun." },
-            { topic: "Reading", prompt: "Which sentence ends with a question mark?", choices: ["I like pizza.", "Please close the door.", "Where is my backpack?", "What a fun day!"], answer: 2, explanation: "Questions end with a question mark." },
-            { topic: "Reading", prompt: "Which word means the opposite of cold?", choices: ["freezing", "warm", "chilly", "icy"], answer: 1, explanation: "Warm is the opposite of cold." },
-            { topic: "Reading", prompt: "Pick the word with a long a sound.", choices: ["cat", "map", "cake", "bag"], answer: 2, explanation: "Cake has the long a sound (a_e)." },
-            { topic: "Reading", prompt: "Which word is spelled correctly?", choices: ["frend", "freind", "friend", "frind"], answer: 2, explanation: "Friend is the correct spelling." },
-
-            { topic: "Math Facts", prompt: "What is 7 + 6?", choices: ["12", "13", "14", "15"], answer: 1, explanation: "7 + 6 = 13." },
-            { topic: "Math Facts", prompt: "What is 15 - 8?", choices: ["5", "6", "7", "8"], answer: 2, explanation: "15 - 8 = 7." },
-            { topic: "Math Facts", prompt: "What is 4 × 5?", choices: ["9", "15", "20", "25"], answer: 2, explanation: "4 groups of 5 equals 20." },
-            { topic: "Math Facts", prompt: "What is 18 + 2?", choices: ["19", "20", "21", "22"], answer: 1, explanation: "18 + 2 = 20." },
-            { topic: "Math Facts", prompt: "What is 30 - 9?", choices: ["19", "20", "21", "22"], answer: 2, explanation: "30 - 9 = 21." },
-
-            { topic: "Place Value", prompt: "In 47, what digit is in the tens place?", choices: ["4", "7", "47", "0"], answer: 0, explanation: "In 47, the 4 means 4 tens." },
-            { topic: "Place Value", prompt: "How many ones are in 63?", choices: ["6", "3", "63", "0"], answer: 1, explanation: "In 63, the ones digit is 3." },
-            { topic: "Place Value", prompt: "Which number is greater?", choices: ["58", "85", "55", "48"], answer: 1, explanation: "85 is the greatest number shown." },
-            { topic: "Place Value", prompt: "Which expanded form matches 72?", choices: ["70 + 2", "7 + 2", "60 + 12", "72 + 0"], answer: 0, explanation: "72 is 7 tens and 2 ones: 70 + 2." },
-            { topic: "Place Value", prompt: "What number is 9 tens and 4 ones?", choices: ["49", "94", "904", "13"], answer: 1, explanation: "9 tens (90) plus 4 ones is 94." },
-
-            { topic: "Word Problems", prompt: "Lia has 12 stickers and gets 7 more. How many now?", choices: ["17", "18", "19", "20"], answer: 2, explanation: "12 + 7 = 19 stickers." },
-            { topic: "Word Problems", prompt: "A class has 20 pencils. 6 are used. How many left?", choices: ["12", "13", "14", "15"], answer: 2, explanation: "20 - 6 = 14 pencils left." },
-            { topic: "Word Problems", prompt: "There are 5 bags with 2 apples each. How many apples?", choices: ["7", "8", "10", "12"], answer: 2, explanation: "5 groups of 2 equals 10 apples." },
-            { topic: "Word Problems", prompt: "Sam read 9 pages on Monday and 9 on Tuesday. Total?", choices: ["16", "17", "18", "19"], answer: 2, explanation: "9 + 9 = 18 pages." },
-            { topic: "Word Problems", prompt: "You have 25 cents and spend 10 cents. How much remains?", choices: ["10 cents", "15 cents", "20 cents", "35 cents"], answer: 1, explanation: "25 cents - 10 cents = 15 cents." },
-
-            { topic: "Time", prompt: "How many minutes are in 1 hour?", choices: ["30", "45", "60", "100"], answer: 2, explanation: "1 hour equals 60 minutes." },
-            { topic: "Time", prompt: "If school starts at 8:00 and ends at 3:00, how many hours?", choices: ["6", "7", "8", "9"], answer: 1, explanation: "From 8:00 to 3:00 is 7 hours." },
-            { topic: "Time", prompt: "What time is half past 4?", choices: ["4:15", "4:30", "5:30", "3:30"], answer: 1, explanation: "Half past 4 means 4:30." },
-            { topic: "Time", prompt: "Which comes first in a day?", choices: ["Evening", "Afternoon", "Morning", "Night"], answer: 2, explanation: "Morning comes first." },
-            { topic: "Time", prompt: "How many days are in two weeks?", choices: ["10", "12", "14", "16"], answer: 2, explanation: "Two weeks is 14 days." },
-
-            { topic: "Money", prompt: "How much is one quarter worth?", choices: ["10 cents", "25 cents", "50 cents", "1 cent"], answer: 1, explanation: "A quarter is worth 25 cents." },
-            { topic: "Money", prompt: "What coin is worth 10 cents?", choices: ["Nickel", "Dime", "Penny", "Quarter"], answer: 1, explanation: "A dime is worth 10 cents." },
-            { topic: "Money", prompt: "If you have 2 dimes, how much money is that?", choices: ["12 cents", "15 cents", "20 cents", "25 cents"], answer: 2, explanation: "Two dimes equal 20 cents." },
-            { topic: "Money", prompt: "Which is the greatest amount?", choices: ["15 cents", "30 cents", "45 cents", "50 cents"], answer: 3, explanation: "50 cents is the greatest amount listed." },
-            { topic: "Money", prompt: "What is 3 nickels worth?", choices: ["10 cents", "15 cents", "20 cents", "30 cents"], answer: 1, explanation: "Each nickel is 5 cents, so 3 nickels is 15 cents." },
-
-            { topic: "Science", prompt: "Which planet do we live on?", choices: ["Mars", "Earth", "Jupiter", "Venus"], answer: 1, explanation: "We live on Earth." },
-            { topic: "Science", prompt: "What do plants need to make food?", choices: ["Sunlight", "Shoes", "Sandwiches", "Televisions"], answer: 0, explanation: "Plants need sunlight to make food." },
-            { topic: "Science", prompt: "Which state of matter is water in when it is ice?", choices: ["Liquid", "Solid", "Gas", "Plasma"], answer: 1, explanation: "Ice is water in solid form." },
-            { topic: "Science", prompt: "What is the main star in our solar system?", choices: ["Moon", "Sun", "Earth", "Comet"], answer: 1, explanation: "The sun is the star in our solar system." },
-            { topic: "Science", prompt: "Which animal is a mammal?", choices: ["Frog", "Shark", "Dolphin", "Eagle"], answer: 2, explanation: "Dolphins are mammals." },
-
-            { topic: "Social Studies", prompt: "What country is this quiz designed for in school terms?", choices: ["Brazil", "United States", "Japan", "Kenya"], answer: 1, explanation: "This quiz follows common U.S. 2nd grade topics." },
-            { topic: "Social Studies", prompt: "Who leads a city?", choices: ["Mayor", "Coach", "Chef", "Pilot"], answer: 0, explanation: "A mayor helps lead a city." },
-            { topic: "Social Studies", prompt: "What map tool shows the meaning of symbols?", choices: ["Scale", "Compass rose", "Key/legend", "Title"], answer: 2, explanation: "The key or legend explains map symbols." },
-            { topic: "Social Studies", prompt: "Which direction is opposite of north?", choices: ["East", "West", "South", "Up"], answer: 2, explanation: "South is opposite north." },
-            { topic: "Social Studies", prompt: "Why do people have rules at school?", choices: ["To stay safe and fair", "To make things confusing", "To stop learning", "To waste time"], answer: 0, explanation: "Rules help everyone stay safe and treat others fairly." },
-
-            { topic: "Grammar", prompt: "Choose the correct sentence.", choices: ["she likes math.", "She likes math.", "She like math.", "she like math"], answer: 1, explanation: "Sentences begin with a capital letter and use correct verbs." },
-            { topic: "Grammar", prompt: "Which word is a verb?", choices: ["jump", "table", "yellow", "quiet"], answer: 0, explanation: "A verb is an action word, like jump." },
-            { topic: "Grammar", prompt: "Pick the proper noun.", choices: ["city", "teacher", "Maria", "school"], answer: 2, explanation: "Maria is a specific name, so it is a proper noun." },
-            { topic: "Grammar", prompt: "Which punctuation ends an excited sentence?", choices: [".", "?", "!", ","], answer: 2, explanation: "An exclamation mark shows excitement." },
-            { topic: "Grammar", prompt: "Which is the best linking word for sequence?", choices: ["First", "Because", "Under", "Very"], answer: 0, explanation: "First is often used to show the start of steps." },
-
-            { topic: "Logic", prompt: "If all squares are rectangles, is every rectangle a square?", choices: ["Yes, always", "No, not always", "Only on Fridays", "Only if it is blue"], answer: 1, explanation: "Squares are a special type of rectangle, but many rectangles are not squares." },
-            { topic: "Logic", prompt: "What comes next: 2, 4, 6, 8, ...", choices: ["9", "10", "11", "12"], answer: 1, explanation: "This pattern adds 2 each time, so next is 10." },
-            { topic: "Logic", prompt: "Which item does NOT belong?", choices: ["Triangle", "Circle", "Banana", "Square"], answer: 2, explanation: "Banana is a fruit, while the others are shapes." },
-            { topic: "Logic", prompt: "If today is Wednesday, what day is tomorrow?", choices: ["Tuesday", "Thursday", "Friday", "Monday"], answer: 1, explanation: "The day after Wednesday is Thursday." },
-            { topic: "Logic", prompt: "A bat and a ball cost $1.10 total. The bat costs $1.00 more than the ball. How much is the ball?", choices: ["5 cents", "10 cents", "50 cents", "55 cents"], answer: 0, explanation: "If the ball is 5 cents, the bat is $1.05, and together they are $1.10." }
+            {
+                topic: "Math",
+                prompt: "What is 6 x 4?",
+                choices: ["10", "24", "18", "20"],
+                answer: 1,
+                explanation: "Six groups of four means 4 + 4 + 4 + 4 + 4 + 4. When you add those numbers, you get 24. Another way to think about it is that 6 x 4 is the same as 4 x 6."
+            },
+            {
+                topic: "Math",
+                prompt: "What is 35 + 27?",
+                choices: ["52", "62", "72", "57"],
+                answer: 1,
+                explanation: "Add the ones first: 5 + 7 = 12. Write down 2 ones and carry 1 ten. Then add the tens: 3 tens + 2 tens + 1 more ten = 6 tens. That makes 62."
+            },
+            {
+                topic: "Math",
+                prompt: "Which fraction is equal to one half?",
+                choices: ["1/4", "2/4", "3/4", "2/3"],
+                answer: 1,
+                explanation: "One half means one out of two equal parts. Two fourths covers the same amount because if you split something into 4 equal parts, 2 of them is still half of the whole."
+            },
+            {
+                topic: "Math",
+                prompt: "A pack has 8 stickers. How many stickers are in 3 packs?",
+                choices: ["11", "16", "24", "28"],
+                answer: 2,
+                explanation: "Three packs of 8 means 8 + 8 + 8, which equals 24. You can also solve it with multiplication: 3 x 8 = 24."
+            },
+            {
+                topic: "Math",
+                prompt: "What is 90 - 36?",
+                choices: ["44", "54", "64", "56"],
+                answer: 1,
+                explanation: "Start with 90. Take away 30 to get 60. Then take away 6 more to get 54. Breaking subtraction into smaller parts can make it easier."
+            },
+            {
+                topic: "Reading",
+                prompt: "Which word is a synonym for happy?",
+                choices: ["Glad", "Tiny", "Slow", "Cold"],
+                answer: 0,
+                explanation: "A synonym is a word that means almost the same thing. Glad means happy, so those two words are synonyms."
+            },
+            {
+                topic: "Reading",
+                prompt: "Which sentence tells the main idea best? 'Dogs need food, water, exercise, and rest to stay healthy.'",
+                choices: ["Dogs like to bark at night.", "Dogs need many things to stay healthy.", "Dogs sleep on soft beds.", "Dogs can run faster than cats."],
+                answer: 1,
+                explanation: "The main idea is the big point of the sentence. The sentence lists food, water, exercise, and rest, so the big point is that dogs need many things to stay healthy."
+            },
+            {
+                topic: "Reading",
+                prompt: "What does the prefix un- usually mean?",
+                choices: ["Again", "Not", "Very", "Small"],
+                answer: 1,
+                explanation: "The prefix un- usually means not. For example, unhappy means not happy, and unfair means not fair."
+            },
+            {
+                topic: "Reading",
+                prompt: "Which word would best complete this sentence? 'Maya whispered so she would not _____ the baby.'",
+                choices: ["measure", "wake", "paint", "borrow"],
+                answer: 1,
+                explanation: "The clue is whispered. People whisper to stay quiet, so the word wake makes the most sense because Maya did not want the baby to wake up."
+            },
+            {
+                topic: "Grammar",
+                prompt: "Which sentence uses the correct verb?",
+                choices: ["The birds flies over the park.", "The birds fly over the park.", "The birds flying over the park.", "The birds flys over the park."],
+                answer: 1,
+                explanation: "Birds is plural, which means more than one. With a plural subject, we use fly, not flies. So 'The birds fly over the park' is correct."
+            },
+            {
+                topic: "Grammar",
+                prompt: "Which word is a proper noun?",
+                choices: ["city", "school", "Texas", "river"],
+                answer: 2,
+                explanation: "A proper noun names a special person, place, or thing and begins with a capital letter. Texas is the name of a specific state, so it is a proper noun."
+            },
+            {
+                topic: "Grammar",
+                prompt: "Which sentence has the correct punctuation?",
+                choices: ["Where is my backpack.", "I can ride my bike?", "Please close the door.", "Watch out,"],
+                answer: 2,
+                explanation: "A telling sentence ends with a period. 'Please close the door.' is written correctly with a capital letter at the start and a period at the end."
+            },
+            {
+                topic: "Science",
+                prompt: "What do plants use from the Sun to make food?",
+                choices: ["Sunlight", "Rocks", "Wind", "Sand"],
+                answer: 0,
+                explanation: "Plants use sunlight, water, and air to make their own food. This process is called photosynthesis. The sunlight gives plants energy."
+            },
+            {
+                topic: "Science",
+                prompt: "Which animal is a mammal?",
+                choices: ["Frog", "Eagle", "Dolphin", "Lizard"],
+                answer: 2,
+                explanation: "A mammal is an animal that breathes air, is warm-blooded, and drinks milk as a baby. A dolphin is a mammal even though it lives in water."
+            },
+            {
+                topic: "Science",
+                prompt: "What happens when water gets very cold and freezes?",
+                choices: ["It turns into steam.", "It disappears.", "It turns into ice.", "It becomes soil."],
+                answer: 2,
+                explanation: "When water freezes, it changes from a liquid to a solid. That solid form of water is called ice."
+            },
+            {
+                topic: "Science",
+                prompt: "Which force pulls objects toward Earth?",
+                choices: ["Sound", "Gravity", "Light", "Heat"],
+                answer: 1,
+                explanation: "Gravity is the force that pulls things down toward Earth. That is why a dropped ball falls instead of floating away."
+            },
+            {
+                topic: "Social Studies",
+                prompt: "What is the capital of the United States?",
+                choices: ["New York City", "Washington, D.C.", "Los Angeles", "Chicago"],
+                answer: 1,
+                explanation: "Washington, D.C. is the capital of the United States. A capital city is the city where a country's government meets and works."
+            },
+            {
+                topic: "Social Studies",
+                prompt: "Which map tool helps you know what symbols mean?",
+                choices: ["Compass rose", "Key", "Title", "Border"],
+                answer: 1,
+                explanation: "A map key explains the symbols on a map. For example, it may show that a blue line means a river or a star means a capital city."
+            },
+            {
+                topic: "Social Studies",
+                prompt: "Why do people in a community follow laws?",
+                choices: ["To make everything louder", "To keep people safe and fair", "To stop all games", "To change the weather"],
+                answer: 1,
+                explanation: "Laws help communities stay organized, safe, and fair. They tell people what behavior is allowed and what behavior is not allowed."
+            },
+            {
+                topic: "Social Studies",
+                prompt: "Which branch of government makes laws?",
+                choices: ["Legislative", "Executive", "Judicial", "Local"],
+                answer: 0,
+                explanation: "The legislative branch makes laws. The executive branch carries out laws, and the judicial branch explains laws and decides if they match the Constitution."
+            },
+            {
+                topic: "Word Problems",
+                prompt: "Jada read 12 pages on Monday and 15 pages on Tuesday. How many pages did she read in all?",
+                choices: ["17", "27", "37", "25"],
+                answer: 1,
+                explanation: "The words 'in all' tell you to add. Add 12 and 15. 2 + 5 = 7 and 1 ten + 1 ten = 2 tens, so the total is 27 pages."
+            },
+            {
+                topic: "Word Problems",
+                prompt: "A classroom has 30 crayons. If 8 crayons are used up, how many crayons are left?",
+                choices: ["22", "18", "38", "24"],
+                answer: 0,
+                explanation: "The words 'are left' tell you to subtract. Start with 30 and take away 8. 30 - 8 = 22."
+            },
+            {
+                topic: "Word Problems",
+                prompt: "There are 4 tables with 5 students at each table. How many students are there?",
+                choices: ["9", "10", "20", "25"],
+                answer: 2,
+                explanation: "When equal groups are given, multiplication helps. Four tables with 5 students each means 4 x 5, which equals 20 students."
+            },
+            {
+                topic: "Word Problems",
+                prompt: "Lena has 18 marbles and gives 6 to her friend. Then she finds 3 more. How many marbles does Lena have now?",
+                choices: ["9", "12", "15", "21"],
+                answer: 2,
+                explanation: "Do the steps in order. Start with 18. Give away 6 to get 12. Then add 3 more to get 15 marbles."
+            }
         ];
 
         const state = {
@@ -650,6 +741,8 @@
         const choicesWrap = document.getElementById("choices");
         const feedback = document.getElementById("feedback");
         const feedbackText = document.getElementById("feedback-text");
+        const answerLine = document.getElementById("answer-line");
+        const explanationBox = document.getElementById("explanation-box");
         const finalScore = document.getElementById("final-score");
         const resultMessage = document.getElementById("result-message");
         const resultSummary = document.getElementById("result-summary");
@@ -673,6 +766,8 @@
             feedback.classList.add("hide");
             feedbackText.textContent = "";
             feedbackText.className = "feedback-text";
+            answerLine.textContent = "";
+            explanationBox.textContent = "";
 
             const current = questions[state.currentIndex];
             const progress = Math.round((state.currentIndex / questions.length) * 100);
@@ -721,14 +816,16 @@
             if (isCorrect) {
                 state.score += 1;
                 scoreCounter.textContent = String(state.score);
-                feedbackText.textContent = `Great job! ${current.explanation}`;
+                feedbackText.textContent = "Correct! Nice work.";
                 feedbackText.classList.add("good");
             } else {
                 selectedButton.classList.add("wrong");
-                feedbackText.textContent = `Nice try! ${current.explanation}`;
+                feedbackText.textContent = "Not quite yet.";
                 feedbackText.classList.add("try");
             }
 
+            answerLine.innerHTML = `<strong>Correct answer:</strong> ${current.choices[current.answer]}`;
+            explanationBox.textContent = current.explanation;
             feedback.classList.remove("hide");
         }
 
@@ -746,16 +843,16 @@
         function showResults() {
             const percent = Math.round((state.score / questions.length) * 100);
             finalScore.textContent = `${state.score}/${questions.length}`;
-            resultSummary.textContent = `You answered ${percent}% of the questions correctly. Keep practicing a little every day and learning will get even stronger.`;
+            resultSummary.textContent = `You answered ${percent}% correctly. Each answer included an explanation, so this quiz works as both practice and review.`;
 
             if (percent >= 90) {
-                resultMessage.textContent = "Amazing work! You are shining bright.";
-            } else if (percent >= 70) {
-                resultMessage.textContent = "Fantastic job! You know so many 2nd grade skills.";
-            } else if (percent >= 50) {
-                resultMessage.textContent = "Nice learning! A little more practice will help even more.";
+                resultMessage.textContent = "Excellent work. Your 3rd grade skills look strong.";
+            } else if (percent >= 75) {
+                resultMessage.textContent = "Great job. You are building strong understanding.";
+            } else if (percent >= 60) {
+                resultMessage.textContent = "Nice effort. A little more practice will help you grow.";
             } else {
-                resultMessage.textContent = "Good trying! Every question is a chance to learn.";
+                resultMessage.textContent = "Keep going. Every explanation is a chance to learn.";
             }
 
             progressText.textContent = "100%";
