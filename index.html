@@ -2,60 +2,122 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>🌱 Plant Life Cycle 🌻</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  body {
+  :root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --hud-height: clamp(170px, 28vh, 240px);
+    --top-ui-height: clamp(88px, 14vh, 132px);
+    --plant-zone-width: min(78vw, 300px);
+    --plant-zone-height: min(34vh, 300px);
+  }
+
+  html, body {
     font-family: 'Baloo 2', cursive;
-    overflow: hidden;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: clip;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
     background: #87CEEB;
   }
 
+  /* ===== Scene Layout ===== */
   .scene {
     position: relative;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    isolation: isolate;
   }
 
+  /* ===== Top Bar: title + stage info ===== */
+  .top-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 10;
+    padding: calc(var(--safe-top) + 6px) 16px 0;
+    text-align: center;
+    pointer-events: none;
+    display: grid;
+    place-items: center;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
+    padding-top: 6px;
+  }
+
+  .stage-info {
+    margin-top: 2px;
+  }
+
+  .stage-name {
+    font-size: 28px;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 2px 3px 8px rgba(0,0,0,0.35);
+    animation: pop-in 0.5s ease-out;
+  }
+
+  .stage-desc {
+    font-size: 15px;
+    font-weight: 500;
+    color: #FFF9C4;
+    text-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+    animation: pop-in 0.5s ease-out 0.15s both;
+  }
+
+  @keyframes pop-in {
+    0% { opacity: 0; transform: scale(0.7) translateY(10px); }
+    100% { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  /* ===== Sky + Ground ===== */
   .sky {
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 60%;
+    height: 55%;
     background: linear-gradient(180deg, #4FC3F7 0%, #81D4FA 40%, #B3E5FC 100%);
     transition: background 1s;
-  }
-
-  .sky.night {
-    background: linear-gradient(180deg, #1a237e 0%, #283593 40%, #3949ab 100%);
   }
 
   .ground {
     position: absolute;
     bottom: 0; left: 0; right: 0;
-    height: 40%;
+    height: 45%;
     background: linear-gradient(180deg, #6D4C41 0%, #5D4037 10%, #4E342E 100%);
-    border-top: 8px solid #388E3C;
+    border-top: 6px solid #388E3C;
   }
 
   .grass {
     position: absolute;
-    top: -30px; left: 0; right: 0;
-    height: 60px;
+    top: -25px; left: 0; right: 0;
+    height: 50px;
     overflow: hidden;
   }
 
   .grass-blade {
     position: absolute;
     bottom: 0;
-    width: 14px;
-    height: 40px;
+    width: 12px;
+    height: 35px;
     background: #43A047;
     border-radius: 50% 50% 0 0;
     transform-origin: bottom center;
@@ -67,67 +129,60 @@
     50% { transform: rotate(5deg); }
   }
 
-  /* Sun */
+  /* ===== Sun ===== */
   .sun {
     position: absolute;
-    top: 30px;
-    right: 60px;
-    width: 100px;
-    height: 100px;
+    top: calc(var(--safe-top) + 12px);
+    right: clamp(10px, 3vw, 20px);
+    width: 64px;
+    height: 64px;
     background: #FFD54F;
     border-radius: 50%;
-    box-shadow: 0 0 60px #FFD54F, 0 0 120px #FFE082;
+    box-shadow: 0 0 40px #FFD54F, 0 0 80px #FFE082;
     animation: pulse-sun 4s ease-in-out infinite;
     cursor: pointer;
     z-index: 5;
     transition: all 1s;
   }
 
-  .sun.draggable { cursor: grab; }
-  .sun.dragging { cursor: grabbing; z-index: 100; animation: none; }
-
-  .sun:hover { transform: scale(1.1); }
-
   .sun-face {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 40px;
+    font-size: 28px;
     line-height: 1;
   }
 
   .sun-rays {
     position: absolute;
-    inset: -20px;
+    inset: -14px;
     animation: spin-slow 20s linear infinite;
   }
 
   .sun-ray {
     position: absolute;
     top: 50%; left: 50%;
-    width: 4px;
-    height: 24px;
+    width: 3px;
+    height: 16px;
     background: #FFD54F;
     border-radius: 2px;
     transform-origin: center 0;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
   @keyframes spin-slow { to { transform: rotate(360deg); } }
-
   @keyframes pulse-sun {
-    0%, 100% { box-shadow: 0 0 60px #FFD54F, 0 0 120px #FFE082; }
-    50% { box-shadow: 0 0 80px #FFCA28, 0 0 160px #FFD54F; }
+    0%, 100% { box-shadow: 0 0 40px #FFD54F, 0 0 80px #FFE082; }
+    50% { box-shadow: 0 0 60px #FFCA28, 0 0 120px #FFD54F; }
   }
 
-  /* Clouds */
+  /* ===== Clouds ===== */
   .cloud {
     position: absolute;
     background: white;
     border-radius: 50px;
-    opacity: 0.9;
+    opacity: 0.85;
   }
-
   .cloud::before, .cloud::after {
     content: '';
     position: absolute;
@@ -136,35 +191,27 @@
   }
 
   .cloud-1 {
-    width: 120px; height: 40px;
-    top: 60px; left: 10%;
+    width: 90px; height: 30px;
+    top: 50px; left: 5%;
     animation: float-cloud 20s linear infinite;
   }
-  .cloud-1::before { width: 50px; height: 50px; top: -25px; left: 20px; }
-  .cloud-1::after { width: 70px; height: 55px; top: -30px; left: 45px; }
+  .cloud-1::before { width: 40px; height: 40px; top: -20px; left: 15px; }
+  .cloud-1::after { width: 55px; height: 42px; top: -22px; left: 35px; }
 
   .cloud-2 {
-    width: 150px; height: 45px;
-    top: 100px; left: 50%;
+    width: 110px; height: 35px;
+    top: 80px; left: 50%;
     animation: float-cloud 25s linear infinite reverse;
   }
-  .cloud-2::before { width: 60px; height: 55px; top: -28px; left: 25px; }
-  .cloud-2::after { width: 80px; height: 60px; top: -35px; left: 55px; }
-
-  .cloud-3 {
-    width: 100px; height: 35px;
-    top: 30px; left: 70%;
-    animation: float-cloud 30s linear infinite;
-  }
-  .cloud-3::before { width: 45px; height: 45px; top: -22px; left: 15px; }
-  .cloud-3::after { width: 55px; height: 48px; top: -26px; left: 40px; }
+  .cloud-2::before { width: 45px; height: 42px; top: -20px; left: 20px; }
+  .cloud-2::after { width: 60px; height: 48px; top: -26px; left: 45px; }
 
   @keyframes float-cloud {
-    0% { transform: translateX(-300px); }
-    100% { transform: translateX(calc(100vw + 300px)); }
+    0% { transform: translateX(-200px); }
+    100% { transform: translateX(calc(100vw + 200px)); }
   }
 
-  /* Rain */
+  /* ===== Rain ===== */
   .rain-container {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -173,50 +220,74 @@
     opacity: 0;
     transition: opacity 0.5s;
   }
-
   .rain-container.active { opacity: 1; }
 
   .raindrop {
     position: absolute;
     width: 3px;
-    height: 20px;
+    height: 18px;
     background: linear-gradient(transparent, #64B5F6);
-    border-radius: 0 0 5px 5px;
+    border-radius: 0 0 4px 4px;
     animation: rain-fall 1s linear infinite;
   }
-
   @keyframes rain-fall {
     0% { transform: translateY(-20px); opacity: 1; }
-    100% { transform: translateY(60vh); opacity: 0; }
+    100% { transform: translateY(55vh); opacity: 0; }
   }
 
-  /* Plant area */
+  /* ===== Plant Area ===== */
   .plant-area {
     position: absolute;
-    bottom: 38%;
     left: 50%;
+    bottom: calc(var(--hud-height) + var(--safe-bottom) + 8px);
     transform: translateX(-50%);
-    width: 300px;
-    height: 350px;
-    z-index: 3;
+    width: var(--plant-zone-width);
+    height: var(--plant-zone-height);
+    max-height: calc(100dvh - var(--hud-height) - var(--top-ui-height) - var(--safe-top) - var(--safe-bottom) - 28px);
+    min-height: 190px;
+    z-index: 12;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
+    pointer-events: none;
   }
 
-  /* Hole in ground */
+  .plant-area > * {
+    pointer-events: auto;
+  }
+
+  .flower-head,
+  .fruit,
+  .fruit-cross,
+  .seed,
+  .leaf,
+  .bee,
+  .completion-badge,
+  .sun,
+  .btn,
+  .dot,
+  .narrator-toggle,
+  .quiz-option,
+  .quiz-next-btn,
+  .quiz-close-btn,
+  .narrator-card-close,
+  .btn-start {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ===== Dirt Hole ===== */
   .dirt-hole {
     position: absolute;
-    bottom: -20px;
-    width: 80px;
-    height: 30px;
+    bottom: -18px;
+    width: 70px;
+    height: 26px;
     background: radial-gradient(ellipse, #3E2723, #4E342E);
     border-radius: 50%;
     transform: scale(0);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   }
-
   .dirt-hole.visible { transform: scale(1); }
 
   .dirt-pile {
@@ -227,22 +298,19 @@
     opacity: 0;
     transition: opacity 0.4s;
   }
-
   .dirt-pile.visible { opacity: 1; }
 
   .dirt-chunk {
-    width: 14px;
-    height: 10px;
+    width: 12px; height: 9px;
     background: #6D4C41;
     border-radius: 50%;
   }
+  .dirt-chunk:nth-child(2) { width: 16px; height: 11px; transform: translateY(-3px); }
 
-  .dirt-chunk:nth-child(2) { width: 18px; height: 12px; transform: translateY(-3px); }
-
-  /* Seed */
+  /* ===== Seed ===== */
   .seed {
-    width: 40px;
-    height: 50px;
+    width: 36px;
+    height: 44px;
     background: radial-gradient(ellipse, #8D6E63, #5D4037);
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
     position: absolute;
@@ -250,52 +318,41 @@
     cursor: pointer;
     transition: all 0.5s;
   }
-
-  .seed.bouncing { animation: seed-bounce 2s ease-in-out infinite; }
-  .seed.draggable { cursor: grab; }
-  .seed.dragging { cursor: grabbing; z-index: 50; }
-
   .seed::after {
     content: '';
     position: absolute;
-    top: 8px; left: 50%;
+    top: 7px; left: 50%;
     transform: translateX(-50%);
-    width: 4px;
-    height: 12px;
+    width: 4px; height: 10px;
     background: #4E342E;
     border-radius: 2px;
   }
-
+  .seed.bouncing { animation: seed-bounce 2s ease-in-out infinite; }
   @keyframes seed-bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }
   }
-
   .seed-planted {
     animation: plant-seed 0.6s ease-in forwards;
   }
-
   @keyframes plant-seed {
     0% { transform: translateY(0); }
     50% { transform: translateY(10px) scale(0.9); }
     100% { transform: translateY(15px) scale(0.8); opacity: 0.6; }
   }
 
-  /* Roots */
+  /* ===== Roots ===== */
   .roots {
     position: absolute;
-    bottom: -45px;
-    width: 60px;
-    height: 40px;
+    bottom: -40px;
+    width: 60px; height: 36px;
     opacity: 0;
   }
-
   .roots.visible { opacity: 1; }
 
   .root-line {
     position: absolute;
-    top: 0;
-    left: 50%;
+    top: 0; left: 50%;
     width: 3px;
     background: #8D6E63;
     border-radius: 0 0 3px 3px;
@@ -303,25 +360,22 @@
     height: 0;
     transition: height 1.5s ease-out;
   }
-
-  .root-line.grown { height: 35px; }
+  .root-line.grown { height: 30px; }
   .root-line:nth-child(1) { transform: translateX(-50%) rotate(-30deg); }
-  .root-line:nth-child(2) { transform: translateX(-50%) rotate(0deg); }
+  .root-line:nth-child(2) { transform: translateX(-50%) rotate(0); }
   .root-line:nth-child(3) { transform: translateX(-50%) rotate(30deg); }
 
   .root-branch {
     position: absolute;
     bottom: 0;
-    width: 2px;
-    height: 12px;
+    width: 2px; height: 10px;
     background: #A1887F;
     border-radius: 0 0 2px 2px;
   }
-
   .root-branch.left { left: -4px; transform: rotate(-25deg); }
   .root-branch.right { right: -4px; transform: rotate(25deg); }
 
-  /* Sprout */
+  /* ===== Sprout ===== */
   .sprout {
     position: absolute;
     bottom: -5px;
@@ -329,49 +383,42 @@
     flex-direction: column;
     align-items: center;
   }
-
   .stem {
-    width: 8px;
+    width: 7px;
     background: linear-gradient(to top, #558B2F, #7CB342);
     border-radius: 4px;
     transform-origin: bottom center;
   }
-
   .sprout .stem {
     height: 0;
     animation: grow-stem-small 1.5s ease-out forwards;
   }
-
-  @keyframes grow-stem-small { to { height: 60px; } }
+  @keyframes grow-stem-small { to { height: 50px; } }
 
   .small-leaf {
     position: absolute;
-    width: 30px;
-    height: 18px;
+    width: 26px; height: 16px;
     background: #66BB6A;
     border-radius: 0 50% 50% 0;
-    top: -8px;
+    top: -7px;
     opacity: 0;
     animation: leaf-appear 0.8s ease-out 1s forwards;
   }
-
   .small-leaf.left {
-    right: 4px;
+    right: 3px;
     border-radius: 50% 0 0 50%;
     transform: rotate(-15deg);
   }
-
   .small-leaf.right {
-    left: 4px;
+    left: 3px;
     transform: rotate(15deg);
   }
-
   @keyframes leaf-appear {
     0% { opacity: 0; transform: scale(0) rotate(0); }
     100% { opacity: 1; transform: scale(1) rotate(15deg); }
   }
 
-  /* Young plant */
+  /* ===== Young Plant ===== */
   .young-plant {
     position: absolute;
     bottom: -5px;
@@ -379,59 +426,55 @@
     flex-direction: column;
     align-items: center;
   }
-
   .young-plant .stem {
     height: 0;
     animation: grow-stem-medium 1.5s ease-out forwards;
   }
-
-  @keyframes grow-stem-medium { to { height: 140px; } }
+  @keyframes grow-stem-medium { to { height: 120px; } }
 
   .leaf {
     position: absolute;
-    width: 50px;
-    height: 28px;
+    width: 44px; height: 26px;
     background: linear-gradient(135deg, #66BB6A, #43A047);
     border-radius: 0 50% 50% 0;
     opacity: 0;
     box-shadow: inset -2px -2px 4px rgba(0,0,0,0.1);
     cursor: pointer;
     transition: transform 0.2s, filter 0.2s;
+    /* Expand touch target */
+    padding: 8px;
+    margin: -8px;
+    touch-action: manipulation;
   }
-
-  .leaf:hover {
-    filter: brightness(1.2);
-    transform: scale(1.15) !important;
+  .leaf:active {
+    filter: brightness(1.25);
+    transform: scale(1.2) !important;
   }
-
   .leaf.left {
     border-radius: 50% 0 0 50%;
-    right: 4px;
+    right: 3px;
   }
-  .leaf.right { left: 4px; }
+  .leaf.right { left: 3px; }
 
-  .leaf-1 { top: 10px; animation: leaf-appear 0.8s ease-out 0.8s forwards; }
-  .leaf-2 { top: 10px; animation: leaf-appear 0.8s ease-out 1s forwards; }
-  .leaf-3 { top: 50px; animation: leaf-appear 0.8s ease-out 1.2s forwards; }
-  .leaf-4 { top: 50px; animation: leaf-appear 0.8s ease-out 1.4s forwards; }
-  .leaf-5 { top: 90px; animation: leaf-appear 0.8s ease-out 1.6s forwards; }
-  .leaf-6 { top: 90px; animation: leaf-appear 0.8s ease-out 1.8s forwards; }
+  .leaf-1 { top: 8px; animation: leaf-appear 0.8s ease-out 0.8s forwards; }
+  .leaf-2 { top: 8px; animation: leaf-appear 0.8s ease-out 1s forwards; }
+  .leaf-3 { top: 42px; animation: leaf-appear 0.8s ease-out 1.2s forwards; }
+  .leaf-4 { top: 42px; animation: leaf-appear 0.8s ease-out 1.4s forwards; }
+  .leaf-5 { top: 76px; animation: leaf-appear 0.8s ease-out 1.6s forwards; }
+  .leaf-6 { top: 76px; animation: leaf-appear 0.8s ease-out 1.8s forwards; }
 
-  /* Leaf vein when clicked */
   .leaf-vein {
     position: absolute;
     top: 50%; left: 10%;
-    width: 70%;
-    height: 2px;
+    width: 70%; height: 2px;
     background: rgba(255,255,255,0.5);
     transform: translateY(-50%);
     opacity: 0;
     transition: opacity 0.3s;
   }
-
   .leaf.clicked .leaf-vein { opacity: 1; }
 
-  /* Flower */
+  /* ===== Flower ===== */
   .flower-plant {
     position: absolute;
     bottom: -5px;
@@ -439,22 +482,19 @@
     flex-direction: column;
     align-items: center;
   }
-
   .flower-plant .stem {
     height: 0;
     animation: grow-stem-tall 1.5s ease-out forwards;
   }
-
-  @keyframes grow-stem-tall { to { height: 180px; } }
+  @keyframes grow-stem-tall { to { height: 150px; } }
 
   .flower-head {
     position: absolute;
-    top: -40px;
+    top: -36px;
     left: 50%;
     transform: translateX(-50%) scale(0);
     animation: bloom 1s ease-out 1.5s forwards;
   }
-
   @keyframes bloom {
     0% { transform: translateX(-50%) scale(0) rotate(0); }
     50% { transform: translateX(-50%) scale(1.2) rotate(10deg); }
@@ -463,29 +503,25 @@
 
   .petal {
     position: absolute;
-    width: 28px;
-    height: 40px;
+    width: 24px; height: 34px;
     border-radius: 50%;
     transform-origin: center bottom;
-    transition: filter 0.2s;
   }
-
   .petal-yellow { background: linear-gradient(to top, #FFD54F, #FFEE58); }
   .petal-pink { background: linear-gradient(to top, #F48FB1, #F8BBD0); }
 
-  .petal:nth-child(1) { transform: rotate(0deg) translateY(-18px); }
-  .petal:nth-child(2) { transform: rotate(45deg) translateY(-18px); }
-  .petal:nth-child(3) { transform: rotate(90deg) translateY(-18px); }
-  .petal:nth-child(4) { transform: rotate(135deg) translateY(-18px); }
-  .petal:nth-child(5) { transform: rotate(180deg) translateY(-18px); }
-  .petal:nth-child(6) { transform: rotate(225deg) translateY(-18px); }
-  .petal:nth-child(7) { transform: rotate(270deg) translateY(-18px); }
-  .petal:nth-child(8) { transform: rotate(315deg) translateY(-18px); }
+  .petal:nth-child(1) { transform: rotate(0deg) translateY(-16px); }
+  .petal:nth-child(2) { transform: rotate(45deg) translateY(-16px); }
+  .petal:nth-child(3) { transform: rotate(90deg) translateY(-16px); }
+  .petal:nth-child(4) { transform: rotate(135deg) translateY(-16px); }
+  .petal:nth-child(5) { transform: rotate(180deg) translateY(-16px); }
+  .petal:nth-child(6) { transform: rotate(225deg) translateY(-16px); }
+  .petal:nth-child(7) { transform: rotate(270deg) translateY(-16px); }
+  .petal:nth-child(8) { transform: rotate(315deg) translateY(-16px); }
 
   .flower-center {
     position: absolute;
-    width: 26px;
-    height: 26px;
+    width: 22px; height: 22px;
     background: radial-gradient(#795548, #5D4037);
     border-radius: 50%;
     top: 50%; left: 50%;
@@ -493,58 +529,39 @@
     z-index: 2;
   }
 
-  /* Pollen dots */
-  .pollen-dot {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: #FFD54F;
-    border-radius: 50%;
-  }
-
-  /* Bee */
+  /* ===== Bee ===== */
   .bee {
     position: absolute;
     z-index: 20;
-    font-size: 36px;
+    font-size: 40px;
     cursor: grab;
-    transition: transform 0.1s;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    touch-action: none;
+    -webkit-touch-callout: none;
   }
-
   .bee:active { cursor: grabbing; }
-
   .bee.buzz {
     animation: buzz 0.15s ease-in-out infinite alternate;
   }
-
   @keyframes buzz {
     0% { transform: translateY(-2px) rotate(-3deg); }
     100% { transform: translateY(2px) rotate(3deg); }
   }
 
-  .bee-path {
-    position: absolute;
-    z-index: 19;
-    pointer-events: none;
-  }
-
   .bee-trail {
     position: absolute;
-    width: 6px;
-    height: 6px;
+    width: 6px; height: 6px;
     background: #FFD54F;
     border-radius: 50%;
     opacity: 0;
     animation: trail-fade 0.5s ease-out forwards;
   }
-
   @keyframes trail-fade {
     0% { opacity: 0.6; transform: scale(1); }
     100% { opacity: 0; transform: scale(0); }
   }
 
-  /* Fruit */
+  /* ===== Fruit ===== */
   .fruit-plant {
     position: absolute;
     bottom: -5px;
@@ -552,7 +569,6 @@
     flex-direction: column;
     align-items: center;
   }
-
   .fruit-plant .stem {
     height: 0;
     animation: grow-stem-tall 1s ease-out forwards;
@@ -560,287 +576,433 @@
 
   .fruit {
     position: absolute;
-    top: -30px;
+    top: -28px;
     left: 50%;
     transform: translateX(-50%) scale(0);
     animation: fruit-grow 1s ease-out 1s forwards;
     cursor: pointer;
-    transition: filter 0.2s;
+    touch-action: manipulation;
+    /* Bigger touch target */
+    padding: 10px;
+    margin: -10px;
   }
-
-  .fruit:hover { filter: brightness(1.15); }
-
   @keyframes fruit-grow {
     0% { transform: translateX(-50%) scale(0); }
     70% { transform: translateX(-50%) scale(1.15); }
     100% { transform: translateX(-50%) scale(1); }
   }
+  .fruit:active { filter: brightness(1.2); }
 
   .fruit-body {
-    width: 50px;
-    height: 55px;
+    width: 46px; height: 50px;
     background: radial-gradient(circle at 35% 35%, #EF5350, #C62828);
     border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
     position: relative;
   }
-
   .fruit-body::before {
     content: '';
     position: absolute;
-    top: -8px; left: 50%;
+    top: -7px; left: 50%;
     transform: translateX(-50%);
-    width: 4px;
-    height: 14px;
+    width: 4px; height: 12px;
     background: #5D4037;
     border-radius: 2px;
   }
-
   .fruit-leaf-top {
     position: absolute;
-    top: -8px; left: 55%;
-    width: 18px;
-    height: 10px;
+    top: -7px; left: 55%;
+    width: 16px; height: 9px;
     background: #43A047;
     border-radius: 0 80% 0 80%;
     transform: rotate(-10deg);
   }
-
   .fruit-shine {
     position: absolute;
-    top: 12px; left: 14px;
-    width: 10px;
-    height: 14px;
+    top: 10px; left: 12px;
+    width: 9px; height: 12px;
     background: rgba(255,255,255,0.35);
     border-radius: 50%;
     transform: rotate(-30deg);
   }
 
-  /* Fruit cross-section */
   .fruit-cross {
     position: absolute;
-    top: -30px;
-    left: calc(50% + 60px);
-    width: 60px;
-    height: 60px;
+    top: -28px;
+    left: calc(50% + 50px);
+    width: 52px; height: 52px;
     background: radial-gradient(circle, #FFCDD2 30%, #EF5350 70%, #C62828 100%);
     border-radius: 50%;
     transform: scale(0);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
     border: 3px solid #C62828;
   }
-
   .fruit-cross.visible { transform: scale(1); }
 
   .fruit-cross-seed {
     position: absolute;
-    width: 6px;
-    height: 8px;
+    width: 5px; height: 7px;
     background: #5D4037;
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
   }
-
-  .fruit-cross-seed:nth-child(1) { top: 35%; left: 30%; }
-  .fruit-cross-seed:nth-child(2) { top: 35%; right: 30%; }
-  .fruit-cross-seed:nth-child(3) { bottom: 25%; left: 42%; }
+  .fruit-cross-seed:nth-child(1) { top: 35%; left: 28%; }
+  .fruit-cross-seed:nth-child(2) { top: 35%; right: 28%; }
+  .fruit-cross-seed:nth-child(3) { bottom: 24%; left: 42%; }
 
   .fruit-cross-label {
     position: absolute;
-    bottom: -24px;
+    bottom: -22px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     color: #C62828;
     white-space: nowrap;
     text-shadow: 0 1px 2px rgba(255,255,255,0.8);
   }
 
-  /* Falling seeds */
   .falling-seed {
     position: absolute;
-    width: 12px;
-    height: 16px;
+    width: 11px; height: 14px;
     background: radial-gradient(ellipse, #8D6E63, #5D4037);
     border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
     z-index: 10;
     animation: seed-fall 2s ease-in forwards;
   }
-
   @keyframes seed-fall {
     0% { opacity: 1; transform: translateY(0) rotate(0); }
-    100% { opacity: 0; transform: translateY(200px) rotate(360deg); }
+    100% { opacity: 0; transform: translateY(180px) rotate(360deg); }
   }
 
-  /* ===== Narrator (Wiggles the Worm) ===== */
-  .narrator-area {
+  /* ===== Sunbeam ===== */
+  .sunbeam {
     position: absolute;
-    bottom: 6%;
-    left: 16px;
-    z-index: 30;
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    max-width: 400px;
+    top: 0; left: 50%;
+    width: 100px; height: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgba(255,235,59,0.3) 0%, rgba(255,235,59,0) 100%);
+    clip-path: polygon(35% 0%, 65% 0%, 100% 100%, 0% 100%);
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 1s;
+    pointer-events: none;
+  }
+  .sunbeam.visible { opacity: 1; }
+
+  /* Water drops */
+  .water-drops {
+    position: absolute;
+    top: 20%; left: 50%;
+    z-index: 8;
     pointer-events: none;
     opacity: 0;
-    transform: translateY(20px);
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: opacity 0.3s;
+  }
+  .water-drops.active { opacity: 1; }
+
+  .water-drop {
+    position: absolute;
+    width: 5px; height: 9px;
+    background: #64B5F6;
+    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    animation: drop-fall 1s ease-in infinite;
+  }
+  .water-drop:nth-child(1) { left: -10px; animation-delay: 0s; }
+  .water-drop:nth-child(2) { left: 0; animation-delay: 0.2s; }
+  .water-drop:nth-child(3) { left: 10px; animation-delay: 0.4s; }
+  .water-drop:nth-child(4) { left: -5px; animation-delay: 0.6s; }
+  .water-drop:nth-child(5) { left: 5px; animation-delay: 0.8s; }
+  @keyframes drop-fall {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(130px); opacity: 0; }
   }
 
-  .narrator-area.visible {
-    opacity: 1;
-    transform: translateY(0);
+  /* ===== Bottom HUD: instruction + buttons + progress + narrator toggle ===== */
+  .bottom-hud {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: var(--hud-height);
+    padding: 0 12px 10px;
+    padding-bottom: calc(10px + var(--safe-bottom));
+    pointer-events: none;
+  }
+
+  .bottom-hud > * {
     pointer-events: auto;
   }
 
-  .narrator-character {
-    font-size: 50px;
-    flex-shrink: 0;
-    animation: worm-wiggle 3s ease-in-out infinite;
-    cursor: pointer;
+  /* Instruction pill */
+  .instruction {
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none !important;
+    text-align: center;
+    max-width: 100%;
   }
+  .instruction.visible { opacity: 1; }
 
-  @keyframes worm-wiggle {
-    0%, 100% { transform: rotate(0) translateY(0); }
-    25% { transform: rotate(-5deg) translateY(-3px); }
-    75% { transform: rotate(5deg) translateY(-3px); }
-  }
-
-  .speech-bubble {
-    background: white;
+  .instruction-text {
+    display: inline-block;
+    background: rgba(0,0,0,0.6);
+    color: #FFF;
+    padding: 6px 16px;
     border-radius: 20px;
-    padding: 14px 18px;
-    position: relative;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    font-size: 16px;
-    line-height: 1.4;
-    color: #333;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.3;
+    /* Allow wrapping! */
+    white-space: normal;
+    max-width: min(90vw, 560px);
+    text-align: center;
   }
 
-  .speech-bubble::before {
-    content: '';
+  /* Controls row */
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: min(92vw, 640px);
+  }
+
+  .btn {
+    /* Apple HIG: 44pt minimum touch target */
+    min-height: 48px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Baloo 2', cursive;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+    color: white;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active {
+    transform: scale(0.93);
+    box-shadow: 0 1px 6px rgba(0,0,0,0.2);
+  }
+
+  .btn-next { background: linear-gradient(135deg, #66BB6A, #43A047); }
+  .btn-prev { background: linear-gradient(135deg, #FFA726, #F57C00); }
+  .btn-restart { background: linear-gradient(135deg, #AB47BC, #7B1FA2); }
+  .btn-quiz { background: linear-gradient(135deg, #FFD54F, #FF8F00); color: #333; }
+  .btn-water { background: linear-gradient(135deg, #42A5F5, #1565C0); }
+  .btn-dig { background: linear-gradient(135deg, #8D6E63, #5D4037); }
+  .btn-sun { background: linear-gradient(135deg, #FFD54F, #FF8F00); color: #333; }
+
+  .btn-action {
+    animation: wiggle 2.5s ease-in-out infinite;
+  }
+  @keyframes wiggle {
+    0%, 100% { transform: rotate(0); }
+    20% { transform: rotate(-4deg); }
+    40% { transform: rotate(4deg); }
+    60% { transform: rotate(0); }
+  }
+  .btn-action:active { animation: none; transform: scale(0.93); }
+
+  /* Progress row */
+  .progress {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: min(92vw, 560px);
+  }
+
+  .dot {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.5);
+    transition: all 0.3s;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    touch-action: manipulation;
+  }
+  .dot.active {
+    background: #FFD54F;
+    border-color: #FFC107;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(255,193,7,0.5);
+  }
+  .dot.visited { background: rgba(255,255,255,0.7); }
+
+  .progress-line {
+    width: 10px; height: 3px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 2px;
+  }
+  .progress-line.filled { background: rgba(255,255,255,0.8); }
+
+  /* Narrator toggle row */
+  .narrator-toggle-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    max-width: min(92vw, 420px);
+    justify-content: center;
+    text-align: center;
+  }
+
+  .narrator-toggle {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.25);
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    touch-action: manipulation;
+  }
+  .narrator-toggle:active {
+    transform: scale(0.9);
+  }
+  .narrator-toggle.has-message {
+    border-color: #E91E63;
+    background: rgba(233,30,99,0.2);
+    animation: narrator-pulse 2s ease-in-out infinite;
+  }
+  @keyframes narrator-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(233,30,99,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(233,30,99,0); }
+  }
+
+  .narrator-hint {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+    font-weight: 600;
+  }
+
+  /* ===== Narrator Modal Overlay ===== */
+  .narrator-overlay {
     position: absolute;
-    bottom: 12px;
-    left: -10px;
-    width: 0;
-    height: 0;
-    border: 8px solid transparent;
-    border-right-color: white;
-    border-left: 0;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.4);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    padding: 20px;
+  }
+  .narrator-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
   }
 
-  .speech-bubble .narrator-name {
+  .narrator-card {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 20px 20px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    transform: scale(0.85) translateY(20px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    text-align: center;
+  }
+  .narrator-overlay.visible .narrator-card {
+    transform: scale(1) translateY(0);
+  }
+
+  .narrator-card-close {
+    position: absolute;
+    top: 10px; right: 14px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    width: 36px; height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    touch-action: manipulation;
+  }
+  .narrator-card-close:active { background: #f0f0f0; }
+
+  .narrator-card-emoji {
+    font-size: 48px;
+    margin-bottom: 8px;
+  }
+
+  .narrator-card-name {
     font-weight: 800;
     color: #E91E63;
-    font-size: 14px;
-    display: block;
-    margin-bottom: 2px;
+    font-size: 16px;
+    margin-bottom: 8px;
   }
 
-  .speech-bubble .fun-fact {
-    margin-top: 6px;
-    padding-top: 6px;
+  .narrator-card-text {
+    font-size: 16px;
+    line-height: 1.45;
+    color: #333;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  .narrator-card-fact {
+    padding-top: 10px;
     border-top: 2px dashed #E8E8E8;
     font-size: 14px;
     color: #666;
-  }
-
-  .speech-bubble .fun-fact b {
-    color: #FF6F00;
-  }
-
-  /* ===== Labels ===== */
-  .part-label {
-    position: absolute;
-    z-index: 12;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.5s 0.5s;
-  }
-
-  .part-label.visible { opacity: 1; }
-
-  .label-tag {
-    background: rgba(255,255,255,0.92);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 13px;
-    font-weight: 700;
-    color: #333;
-    white-space: nowrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border: 2px solid;
-  }
-
-  .label-line {
-    position: absolute;
-    width: 2px;
-    height: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-
-  .label-line.above { bottom: 100%; }
-  .label-line.below { top: 100%; }
-
-  /* ===== Info Panel ===== */
-  .info-panel {
-    position: absolute;
-    top: 60px;
-    right: 16px;
-    width: 220px;
-    z-index: 15;
-    opacity: 0;
-    transform: translateX(30px);
-    transition: all 0.5s;
-    pointer-events: none;
-  }
-
-  .info-panel.visible {
-    opacity: 1;
-    transform: translateX(0);
-    pointer-events: auto;
-  }
-
-  .info-card {
-    background: rgba(255,255,255,0.92);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-  }
-
-  .info-card h3 {
-    font-size: 16px;
-    color: #2E7D32;
-    margin-bottom: 6px;
-  }
-
-  .info-card p {
-    font-size: 13px;
-    color: #555;
     line-height: 1.4;
   }
+  .narrator-card-fact b { color: #FF6F00; }
 
+  .narrator-card-info {
+    margin-top: 12px;
+    padding: 12px;
+    background: #F1F8E9;
+    border-radius: 14px;
+    text-align: left;
+  }
+  .narrator-card-info h4 {
+    font-size: 15px;
+    color: #2E7D32;
+    margin-bottom: 4px;
+  }
+  .narrator-card-info p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.35;
+  }
   .needs-list {
     list-style: none;
     padding: 0;
-    margin-top: 8px;
+    margin-top: 6px;
   }
-
   .needs-list li {
-    font-size: 14px;
-    padding: 3px 0;
+    font-size: 13px;
+    padding: 2px 0;
     display: flex;
     align-items: center;
     gap: 6px;
   }
-
-  .needs-list .icon { font-size: 18px; }
-
   .need-check {
-    width: 18px;
-    height: 18px;
+    width: 18px; height: 18px;
     border-radius: 50%;
     border: 2px solid #ccc;
     display: flex;
@@ -850,214 +1012,13 @@
     transition: all 0.3s;
     flex-shrink: 0;
   }
-
   .need-check.done {
     background: #43A047;
     border-color: #43A047;
     color: white;
   }
 
-  /* ===== Title bar ===== */
-  .title-bar {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    padding: 12px 20px;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-  }
-
-  .title {
-    font-size: 28px;
-    font-weight: 800;
-    color: white;
-    text-shadow: 2px 2px 6px rgba(0,0,0,0.3);
-  }
-
-  /* Stage label */
-  .stage-label {
-    position: absolute;
-    bottom: 44%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-    text-align: center;
-    pointer-events: none;
-    width: 80%;
-  }
-
-  .stage-name {
-    font-size: 38px;
-    font-weight: 800;
-    color: #fff;
-    text-shadow: 2px 3px 8px rgba(0,0,0,0.35);
-    animation: pop-in 0.6s ease-out;
-  }
-
-  .stage-desc {
-    font-size: 20px;
-    font-weight: 500;
-    color: #FFF9C4;
-    text-shadow: 1px 2px 4px rgba(0,0,0,0.3);
-    margin-top: 4px;
-    animation: pop-in 0.6s ease-out 0.2s both;
-  }
-
-  @keyframes pop-in {
-    0% { opacity: 0; transform: scale(0.5) translateY(20px); }
-    100% { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  /* ===== Instruction callout ===== */
-  .instruction {
-    position: absolute;
-    bottom: 48%;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 25;
-    text-align: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.5s;
-  }
-
-  .instruction.visible { opacity: 1; }
-
-  .instruction-text {
-    background: rgba(0,0,0,0.55);
-    color: #FFF;
-    padding: 10px 22px;
-    border-radius: 30px;
-    font-size: 18px;
-    font-weight: 700;
-    animation: gentle-bounce 2s ease-in-out infinite;
-    white-space: nowrap;
-  }
-
-  @keyframes gentle-bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-  }
-
-  /* ===== Controls ===== */
-  .controls {
-    position: absolute;
-    bottom: 16px;
-    left: 0; right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    z-index: 10;
-    flex-wrap: wrap;
-    padding: 0 16px;
-  }
-
-  .btn {
-    padding: 12px 28px;
-    border: none;
-    border-radius: 50px;
-    font-family: 'Baloo 2', cursive;
-    font-size: 20px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    color: white;
-  }
-
-  .btn:hover {
-    transform: scale(1.08);
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-  }
-
-  .btn:active { transform: scale(0.95); }
-
-  .btn-next { background: linear-gradient(135deg, #66BB6A, #43A047); }
-  .btn-prev { background: linear-gradient(135deg, #FFA726, #F57C00); }
-  .btn-restart { background: linear-gradient(135deg, #AB47BC, #7B1FA2); }
-  .btn-quiz { background: linear-gradient(135deg, #FFD54F, #FF8F00); color: #333; }
-
-  .btn-water {
-    background: linear-gradient(135deg, #42A5F5, #1565C0);
-    animation: wiggle 2s ease-in-out infinite;
-  }
-
-  .btn-dig {
-    background: linear-gradient(135deg, #8D6E63, #5D4037);
-    animation: wiggle 2s ease-in-out infinite;
-  }
-
-  .btn-sun {
-    background: linear-gradient(135deg, #FFD54F, #FF8F00);
-    color: #333;
-    animation: wiggle 2s ease-in-out infinite;
-  }
-
-  @keyframes wiggle {
-    0%, 100% { transform: rotate(0); }
-    25% { transform: rotate(-5deg); }
-    75% { transform: rotate(5deg); }
-  }
-
-  .btn-water:hover, .btn-dig:hover, .btn-sun:hover {
-    animation: none;
-    transform: scale(1.08);
-  }
-
-  /* ===== Progress ===== */
-  .progress {
-    position: absolute;
-    bottom: 68px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 8px;
-    z-index: 10;
-    align-items: center;
-  }
-
-  .progress-step {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .dot {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.3);
-    border: 3px solid rgba(255,255,255,0.6);
-    transition: all 0.3s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-  }
-
-  .dot:hover { transform: scale(1.15); }
-
-  .dot.active {
-    background: #FFD54F;
-    border-color: #FFC107;
-    transform: scale(1.15);
-    box-shadow: 0 0 12px rgba(255,193,7,0.5);
-  }
-
-  .dot.visited { background: rgba(255,255,255,0.7); }
-
-  .progress-line {
-    width: 16px;
-    height: 3px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 2px;
-  }
-
-  .progress-line.filled { background: rgba(255,255,255,0.8); }
-
-  /* ===== Quiz ===== */
+  /* ===== Quiz Overlay ===== */
   .quiz-overlay {
     position: absolute;
     inset: 0;
@@ -1069,8 +1030,9 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.4s;
+    padding: 20px;
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   }
-
   .quiz-overlay.visible {
     opacity: 1;
     pointer-events: auto;
@@ -1079,160 +1041,141 @@
   .quiz-card {
     background: white;
     border-radius: 24px;
-    padding: 30px;
-    max-width: 420px;
-    width: 90%;
+    padding: 28px 22px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
     text-align: center;
     box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    transform: scale(0.8);
+    transform: scale(0.85);
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
   }
-
   .quiz-overlay.visible .quiz-card { transform: scale(1); }
 
   .quiz-card h2 {
-    font-size: 26px;
+    font-size: 24px;
     color: #2E7D32;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
-
   .quiz-progress {
-    font-size: 14px;
+    font-size: 13px;
     color: #999;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
-
   .quiz-question {
-    font-size: 20px;
+    font-size: 18px;
     color: #333;
-    margin-bottom: 20px;
-    min-height: 60px;
+    margin-bottom: 16px;
+    min-height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
-
   .quiz-options {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
-
   .quiz-option {
-    padding: 14px 20px;
+    min-height: 48px;
+    padding: 12px 16px;
     border: 3px solid #E0E0E0;
     border-radius: 16px;
     font-family: 'Baloo 2', cursive;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
     background: #FAFAFA;
     cursor: pointer;
     transition: all 0.2s;
     color: #333;
+    touch-action: manipulation;
   }
-
-  .quiz-option:hover {
-    border-color: #90CAF9;
+  .quiz-option:active {
     background: #E3F2FD;
-    transform: scale(1.02);
+    border-color: #90CAF9;
   }
-
   .quiz-option.correct {
     border-color: #43A047;
     background: #E8F5E9;
     color: #2E7D32;
     animation: correct-pop 0.4s ease-out;
   }
-
   .quiz-option.wrong {
     border-color: #EF5350;
     background: #FFEBEE;
     color: #C62828;
     animation: shake 0.4s ease-out;
   }
-
   @keyframes correct-pop {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
   }
-
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-8px); }
-    40% { transform: translateX(8px); }
-    60% { transform: translateX(-6px); }
-    80% { transform: translateX(6px); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
   }
 
   .quiz-result {
-    font-size: 18px;
-    margin-top: 12px;
+    font-size: 16px;
+    margin-top: 10px;
     font-weight: 700;
-    min-height: 30px;
+    min-height: 28px;
   }
-
   .quiz-next-btn {
-    margin-top: 16px;
-    padding: 12px 30px;
+    margin-top: 14px;
+    min-height: 48px;
+    padding: 12px 28px;
     background: linear-gradient(135deg, #66BB6A, #43A047);
     color: white;
     border: none;
     border-radius: 30px;
     font-family: 'Baloo 2', cursive;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.2s;
     display: none;
+    touch-action: manipulation;
   }
-
-  .quiz-next-btn:hover { transform: scale(1.08); }
-
   .quiz-close-btn {
     position: absolute;
-    top: 14px;
-    right: 18px;
+    top: 10px; right: 14px;
     background: none;
     border: none;
     font-size: 28px;
     cursor: pointer;
     color: #999;
-    transition: color 0.2s;
+    width: 40px; height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    touch-action: manipulation;
   }
+  .quiz-score { font-size: 36px; margin: 8px 0; }
 
-  .quiz-close-btn:hover { color: #333; }
-
-  .quiz-score {
-    font-size: 40px;
-    margin: 10px 0;
-  }
-
-  /* ===== Sparkles ===== */
+  /* ===== Sparkles / Effects ===== */
   .sparkle {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: 8px; height: 8px;
     border-radius: 50%;
     pointer-events: none;
     z-index: 15;
     animation: sparkle 0.8s ease-out forwards;
   }
-
   @keyframes sparkle {
     0% { opacity: 1; transform: scale(1); }
     100% { opacity: 0; transform: scale(0) translateY(-40px); }
   }
-
-  /* Star sparkle */
   .star-sparkle {
     position: absolute;
     pointer-events: none;
     z-index: 15;
-    font-size: 20px;
+    font-size: 18px;
     animation: star-pop 0.8s ease-out forwards;
   }
-
   @keyframes star-pop {
     0% { opacity: 1; transform: scale(0) rotate(0); }
     50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
@@ -1246,76 +1189,64 @@
     animation: fly 8s ease-in-out infinite;
     pointer-events: none;
   }
-
   .butterfly-wing {
     display: inline-block;
-    font-size: 30px;
+    font-size: 26px;
     animation: flutter 0.3s ease-in-out infinite alternate;
   }
-
   @keyframes fly {
     0% { transform: translate(0, 0); }
-    25% { transform: translate(80px, -40px); }
-    50% { transform: translate(160px, 10px); }
-    75% { transform: translate(80px, 50px); }
+    25% { transform: translate(60px, -30px); }
+    50% { transform: translate(120px, 10px); }
+    75% { transform: translate(60px, 40px); }
     100% { transform: translate(0, 0); }
   }
-
   @keyframes flutter {
     0% { transform: scaleX(1); }
     100% { transform: scaleX(0.3); }
   }
 
-  /* Water drops */
-  .water-drops {
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    z-index: 70;
+    animation: confetti-fall 3s ease-out forwards;
+  }
+  @keyframes confetti-fall {
+    0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
+    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* Badge */
+  .completion-badge {
     position: absolute;
-    top: 20%;
-    left: 50%;
-    z-index: 8;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
+    top: clamp(34%, 38vh, 44%); left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: linear-gradient(135deg, #FFD54F, #FF8F00);
+    border-radius: 50%;
+    width: 160px; height: 160px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 60;
+    box-shadow: 0 0 30px rgba(255,193,7,0.5), 0 6px 25px rgba(0,0,0,0.3);
+    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    text-align: center;
+    border: 5px solid #FFF;
+    cursor: pointer;
+    touch-action: manipulation;
   }
-
-  .water-drops.active { opacity: 1; }
-
-  .water-drop {
-    position: absolute;
-    width: 6px;
-    height: 10px;
-    background: #64B5F6;
-    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
-    animation: drop-fall 1s ease-in infinite;
+  .completion-badge.show {
+    transform: translate(-50%, -50%) scale(1);
   }
-
-  .water-drop:nth-child(1) { left: -10px; animation-delay: 0s; }
-  .water-drop:nth-child(2) { left: 0; animation-delay: 0.2s; }
-  .water-drop:nth-child(3) { left: 10px; animation-delay: 0.4s; }
-  .water-drop:nth-child(4) { left: -5px; animation-delay: 0.6s; }
-  .water-drop:nth-child(5) { left: 5px; animation-delay: 0.8s; }
-
-  @keyframes drop-fall {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(150px); opacity: 0; }
+  .badge-emoji { font-size: 40px; }
+  .badge-text {
+    font-size: 15px;
+    font-weight: 800;
+    color: #33691E;
+    padding: 0 12px;
   }
-
-  /* Sunbeam */
-  .sunbeam {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 120px;
-    height: 55%;
-    transform: translateX(-50%);
-    background: linear-gradient(180deg, rgba(255,235,59,0.35) 0%, rgba(255,235,59,0) 100%);
-    clip-path: polygon(35% 0%, 65% 0%, 100% 100%, 0% 100%);
-    z-index: 2;
-    opacity: 0;
-    transition: opacity 1s;
-    pointer-events: none;
-  }
-
-  .sunbeam.visible { opacity: 1; }
 
   /* ===== Intro ===== */
   .intro-screen {
@@ -1328,8 +1259,8 @@
     align-items: center;
     justify-content: center;
     transition: opacity 0.8s, transform 0.8s;
+    padding: calc(var(--safe-top) + 20px) 20px calc(20px + var(--safe-bottom));
   }
-
   .intro-screen.hidden {
     opacity: 0;
     transform: scale(1.1);
@@ -1337,137 +1268,169 @@
   }
 
   .intro-emoji {
-    font-size: 100px;
+    font-size: 80px;
     animation: bounce-intro 2s ease-in-out infinite;
   }
-
   @keyframes bounce-intro {
     0%, 100% { transform: translateY(0) rotate(0); }
-    50% { transform: translateY(-20px) rotate(5deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
   }
 
   .intro-title {
-    font-size: 46px;
+    font-size: 36px;
     font-weight: 800;
     color: white;
     text-shadow: 3px 3px 8px rgba(0,0,0,0.3);
-    margin: 20px 0 8px;
+    margin: 16px 0 6px;
     text-align: center;
-    padding: 0 20px;
   }
-
   .intro-sub {
-    font-size: 22px;
+    font-size: 18px;
     color: #C8E6C9;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     text-align: center;
-    padding: 0 20px;
   }
-
   .intro-features {
     display: flex;
-    gap: 24px;
-    margin-bottom: 30px;
+    gap: 16px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0 20px;
   }
-
-  .intro-feature {
-    text-align: center;
-    color: white;
-  }
-
-  .intro-feature-icon { font-size: 36px; }
-  .intro-feature-label { font-size: 14px; opacity: 0.85; }
+  .intro-feature { text-align: center; color: white; }
+  .intro-feature-icon { font-size: 30px; }
+  .intro-feature-label { font-size: 12px; opacity: 0.85; }
 
   .btn-start {
-    padding: 18px 50px;
+    min-height: 56px;
+    padding: 14px 44px;
     background: linear-gradient(135deg, #FFD54F, #FFC107);
     color: #33691E;
     border: none;
     border-radius: 50px;
     font-family: 'Baloo 2', cursive;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     cursor: pointer;
     box-shadow: 0 6px 20px rgba(0,0,0,0.25);
     transition: all 0.2s;
     animation: pulse-btn 2s ease-in-out infinite;
+    touch-action: manipulation;
   }
-
   @keyframes pulse-btn {
     0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.05); }
+    50% { transform: scale(1.04); }
+  }
+  .btn-start:active { transform: scale(0.95) !important; }
+
+  @media (max-width: 820px) {
+    :root {
+      --hud-height: clamp(185px, 30vh, 270px);
+      --top-ui-height: clamp(92px, 16vh, 140px);
+      --plant-zone-width: min(82vw, 280px);
+      --plant-zone-height: min(30vh, 250px);
+    }
+
+    .top-bar {
+      padding-left: 88px;
+      padding-right: 88px;
+    }
+
+    .title {
+      font-size: clamp(17px, 4.8vw, 21px);
+      line-height: 1.1;
+    }
+
+    .stage-name {
+      font-size: clamp(22px, 7vw, 30px);
+      line-height: 1;
+    }
+
+    .stage-desc {
+      font-size: clamp(13px, 3.6vw, 15px);
+      line-height: 1.25;
+    }
+
+    .controls {
+      gap: 8px;
+    }
+
+    .btn {
+      min-width: 132px;
+      padding: 11px 18px;
+      font-size: clamp(15px, 4.1vw, 18px);
+    }
+
+    .dot {
+      width: 34px;
+      height: 34px;
+    }
+
+    .narrator-hint {
+      max-width: 180px;
+      line-height: 1.2;
+    }
+
+    .fruit-cross {
+      left: calc(50% + 38px);
+      width: 44px;
+      height: 44px;
+    }
+
+    .fruit-cross-label {
+      font-size: 11px;
+      bottom: -20px;
+    }
   }
 
-  .btn-start:hover {
-    transform: scale(1.1) !important;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  /* ===== iPad (larger screens) ===== */
+  @media (min-width: 768px) {
+    :root {
+      --hud-height: clamp(190px, 24vh, 250px);
+      --top-ui-height: clamp(104px, 13vh, 148px);
+      --plant-zone-width: min(42vw, 340px);
+      --plant-zone-height: min(36vh, 340px);
+    }
+
+    .title { font-size: 26px; }
+    .stage-name { font-size: 36px; }
+    .stage-desc { font-size: 18px; }
+    .btn { font-size: 22px; padding: 14px 32px; }
+    .sun { width: 90px; height: 90px; top: 20px; right: 40px; }
+    .sun-face { font-size: 36px; }
+    .instruction-text { font-size: 18px; }
+    .dot { width: 36px; height: 36px; font-size: 17px; }
+    .progress-line { width: 16px; }
+    .narrator-card { max-width: 440px; }
+    .narrator-card-text { font-size: 18px; }
+    .intro-title { font-size: 48px; }
+    .intro-emoji { font-size: 100px; }
+    .btn-start { font-size: 30px; padding: 18px 56px; }
+    .bee { font-size: 48px; }
+    .leaf { width: 50px; height: 28px; }
+    .completion-badge { width: 200px; height: 200px; }
+    .badge-emoji { font-size: 50px; }
+    .badge-text { font-size: 18px; }
   }
 
-  /* Confetti */
-  .confetti {
-    position: fixed;
-    z-index: 50;
-    animation: confetti-fall 3s ease-out forwards;
-  }
+  /* ===== Very small screens (iPhone SE) ===== */
+  @media (max-height: 600px) {
+    :root {
+      --hud-height: 170px;
+      --top-ui-height: 82px;
+      --plant-zone-height: min(28vh, 200px);
+    }
 
-  @keyframes confetti-fall {
-    0% { transform: translateY(-10vh) rotate(0); opacity: 1; }
-    100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
-  }
-
-  /* Badge */
-  .completion-badge {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    background: linear-gradient(135deg, #FFD54F, #FF8F00);
-    border-radius: 50%;
-    width: 200px;
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 60;
-    box-shadow: 0 0 40px rgba(255,193,7,0.5), 0 8px 30px rgba(0,0,0,0.3);
-    transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    text-align: center;
-    border: 6px solid #FFF;
-    cursor: pointer;
-  }
-
-  .completion-badge.show {
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .badge-emoji { font-size: 50px; }
-  .badge-text {
-    font-size: 18px;
-    font-weight: 800;
-    color: #33691E;
-    padding: 0 15px;
-  }
-
-  /* Responsive */
-  @media (max-width: 700px) {
-    .title { font-size: 20px; }
-    .stage-name { font-size: 26px; }
-    .stage-desc { font-size: 15px; }
-    .btn { padding: 10px 20px; font-size: 16px; }
-    .sun { width: 70px; height: 70px; right: 20px; top: 15px; }
-    .sun-face { font-size: 28px; }
-    .intro-title { font-size: 30px; }
-    .intro-emoji { font-size: 70px; }
-    .narrator-area { max-width: 280px; }
-    .speech-bubble { font-size: 13px; padding: 10px 14px; }
-    .narrator-character { font-size: 38px; }
-    .info-panel { display: none; }
-    .instruction-text { font-size: 15px; }
-    .progress { bottom: 62px; }
-    .dot { width: 26px; height: 26px; font-size: 13px; }
+    .top-bar { padding-top: env(safe-area-inset-top, 4px); }
+    .title { font-size: 16px; }
+    .stage-name { font-size: 22px; }
+    .stage-desc { font-size: 13px; }
+    .plant-area { min-height: 170px; }
+    .btn { min-height: 42px; padding: 8px 18px; font-size: 15px; }
+    .dot { width: 24px; height: 24px; font-size: 12px; }
+    .instruction-text { font-size: 12px; }
+    .intro-emoji { font-size: 60px; }
+    .intro-title { font-size: 28px; }
   }
 </style>
 </head>
@@ -1499,7 +1462,6 @@
 
   <div class="cloud cloud-1"></div>
   <div class="cloud cloud-2"></div>
-  <div class="cloud cloud-3"></div>
 
   <div class="sunbeam" id="sunbeam"></div>
   <div class="rain-container" id="rain"></div>
@@ -1518,37 +1480,47 @@
     <div class="grass" id="grass"></div>
   </div>
 
-  <div class="title-bar">
-    <div class="title" id="title">🌱 Plant Life Cycle 🌻</div>
-  </div>
-
-  <div class="stage-label" id="stageLabel">
-    <div class="stage-name" id="stageName"></div>
-    <div class="stage-desc" id="stageDesc"></div>
-  </div>
-
-  <div class="instruction" id="instruction">
-    <div class="instruction-text" id="instructionText"></div>
-  </div>
-
-  <div class="info-panel" id="infoPanel"></div>
-
-  <div class="narrator-area" id="narratorArea">
-    <div class="narrator-character" id="narratorChar" onclick="pokeNarrator()">🐛</div>
-    <div class="speech-bubble" id="speechBubble">
-      <span class="narrator-name">Wiggles says:</span>
-      <span id="narratorText"></span>
-      <div class="fun-fact" id="funFact"></div>
+  <!-- Top bar: title + stage info (no touch blocking) -->
+  <div class="top-bar" id="topBar">
+    <div class="title">🌱 Plant Life Cycle 🌻</div>
+    <div class="stage-info">
+      <div class="stage-name" id="stageName"></div>
+      <div class="stage-desc" id="stageDesc"></div>
     </div>
   </div>
 
-  <div class="progress" id="progress"></div>
-  <div class="controls" id="controls"></div>
+  <!-- Bottom HUD: stacked vertically, safe from overlap -->
+  <div class="bottom-hud">
+    <div class="instruction" id="instruction">
+      <div class="instruction-text" id="instructionText"></div>
+    </div>
+
+    <div class="controls" id="controls"></div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="narrator-toggle-row">
+      <div class="narrator-toggle has-message" id="narratorToggle" onclick="toggleNarrator()">🐛</div>
+      <span class="narrator-hint" id="narratorHint">Tap Wiggles!</span>
+    </div>
+  </div>
+</div>
+
+<!-- Narrator Modal -->
+<div class="narrator-overlay" id="narratorOverlay" onclick="closeNarratorIfBg(event)">
+  <div class="narrator-card">
+    <button class="narrator-card-close" onclick="closeNarrator()">&times;</button>
+    <div class="narrator-card-emoji">🐛</div>
+    <div class="narrator-card-name">Wiggles says:</div>
+    <div class="narrator-card-text" id="narratorText"></div>
+    <div class="narrator-card-fact" id="funFact"></div>
+    <div class="narrator-card-info" id="narratorInfo"></div>
+  </div>
 </div>
 
 <div class="completion-badge" id="badge" onclick="openQuiz()">
   <div class="badge-emoji">🌟</div>
-  <div class="badge-text">Plant Expert!<br><span style="font-size:12px">Tap for Quiz!</span></div>
+  <div class="badge-text">Plant Expert!<br><span style="font-size:11px">Tap for Quiz!</span></div>
 </div>
 
 <!-- Quiz -->
@@ -1573,15 +1545,17 @@ function ensureAudio() {
 }
 
 function playTone(freq, dur, type = 'sine', vol = 0.12) {
-  ensureAudio();
-  const o = audioCtx.createOscillator();
-  const g = audioCtx.createGain();
-  o.type = type;
-  o.frequency.value = freq;
-  g.gain.value = vol;
-  g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
-  o.connect(g).connect(audioCtx.destination);
-  o.start(); o.stop(audioCtx.currentTime + dur);
+  try {
+    ensureAudio();
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.value = vol;
+    g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(e) {}
 }
 
 function sfxPop() { playTone(600, 0.15, 'sine', 0.10); }
@@ -1596,23 +1570,23 @@ function sfxCelebrate() {
   [523,587,659,698,784].forEach((f,i) => setTimeout(() => playTone(f, 0.2, 'sine', 0.09), i * 120));
 }
 
-/* ===== Stage definitions ===== */
+/* ===== Stages ===== */
 const stages = [
   {
     name: "🌰 Seed",
     desc: "Every plant starts as a tiny seed!",
-    narrator: "Hi there! I'm Wiggles the worm! Let's plant a seed together! First, tap the shovel to dig a hole in the soil.",
+    narrator: "Hi there! I'm Wiggles the worm! Let's plant a seed together! First, tap the button to dig a hole in the soil.",
     funFact: "<b>Did you know?</b> A seed has a baby plant inside it called an embryo, plus food to help it start growing!",
-    info: { title: "What's a Seed?", text: "A seed is like a tiny backpack! Inside it has a baby plant and food to help it grow. Seeds come in all shapes and sizes.", needs: ["Dig a hole", "Plant the seed"] },
+    info: { title: "What's a Seed?", text: "A seed is like a tiny backpack! Inside it has a baby plant and food to help it grow.", needs: ["Dig a hole", "Plant the seed"] },
     build: buildSeed,
     interactive: 'dig'
   },
   {
     name: "💧 Water",
-    desc: "Seeds need water to wake up and start growing!",
-    narrator: "Great job planting! Now the seed needs water. Tap the watering can 3 times! Water helps the seed crack open.",
+    desc: "Seeds need water to wake up!",
+    narrator: "Great job planting! Now the seed needs water. Tap the watering button 3 times! Water helps the seed crack open.",
     funFact: "<b>Did you know?</b> Water makes the seed swell up and crack open. This is called germination!",
-    info: { title: "Why Water?", text: "Water soaks into the seed and wakes up the baby plant inside. The seed coat softens and cracks open so the roots can come out!", needs: ["Water 1", "Water 2", "Water 3"] },
+    info: { title: "Why Water?", text: "Water soaks into the seed and wakes up the baby plant inside. The seed coat softens and cracks open!", needs: ["Water 1", "Water 2", "Water 3"] },
     build: buildWatering,
     interactive: 'water'
   },
@@ -1621,34 +1595,34 @@ const stages = [
     desc: "The sprout needs sunshine to make food!",
     narrator: "Look, a little sprout! Now it needs sunshine to make its own food. Tap the sun button to give it light!",
     funFact: "<b>Did you know?</b> Plants use sunlight to turn water and air into sugar! This is called photosynthesis.",
-    info: { title: "Photosynthesis", text: "Leaves are like tiny solar panels! They catch sunlight and use it to turn water + air (CO2) into sugar food for the plant.", needs: ["Give sunlight"] },
+    info: { title: "Photosynthesis", text: "Leaves are like tiny solar panels! They catch sunlight and turn water + air (CO2) into sugar food.", needs: ["Give sunlight"] },
     build: buildSunlight,
     interactive: 'sun'
   },
   {
     name: "🌿 Growing",
     desc: "The plant grows taller with more leaves!",
-    narrator: "Wow, it's getting so tall! Tap the leaves to see what they do. Leaves are where the plant makes food from sunlight!",
+    narrator: "Wow, it's getting so tall! Tap the leaves to see what they do. Each leaf has a special job!",
     funFact: "<b>Did you know?</b> Leaves have tiny holes called stomata that breathe in air and let out water!",
-    info: { title: "Parts of a Plant", text: "Roots drink water from the soil. The stem carries water up. Leaves catch sunlight and make food. Each part has an important job!" },
+    info: { title: "Parts of a Plant", text: "Roots drink water. The stem carries it up. Leaves catch sunlight and make food!" },
     build: buildYoungPlant,
     interactive: 'leaves'
   },
   {
     name: "🌸 Flower",
     desc: "The plant blooms beautiful flowers!",
-    narrator: "A flower! Flowers aren't just pretty — they help make new seeds. Drag the bee to the flower to spread pollen!",
+    narrator: "A flower! Flowers help make new seeds. Drag the bee to the flower to spread pollen!",
     funFact: "<b>Did you know?</b> Bees visit over 2,000 flowers every single day! They spread pollen from flower to flower.",
-    info: { title: "Pollination", text: "Flowers make pollen (a yellow powder). Bees carry pollen between flowers. This helps the plant make seeds and fruit!" },
+    info: { title: "Pollination", text: "Flowers make pollen (a yellow powder). Bees carry it between flowers to help make seeds!" },
     build: buildFlower,
     interactive: 'bee'
   },
   {
     name: "🍎 Fruit & Seeds",
     desc: "The flower becomes fruit with seeds inside!",
-    narrator: "The flower turned into a fruit! Inside are brand new seeds. Tap the fruit to see the seeds. The cycle starts all over again!",
+    narrator: "The flower turned into a fruit! Inside are brand new seeds. Tap the fruit to see them! The cycle starts all over again!",
     funFact: "<b>Did you know?</b> An apple has about 10 seeds inside! Each one could grow into a whole new apple tree!",
-    info: { title: "The Cycle Repeats!", text: "After pollination, the flower becomes a fruit. Inside the fruit are seeds! When seeds fall to the ground, new plants can grow. The cycle never ends!" },
+    info: { title: "The Cycle Repeats!", text: "After pollination, the flower becomes fruit. Inside are seeds! When they fall, new plants grow. The cycle never ends!" },
     build: buildFruit,
     interactive: 'fruit'
   }
@@ -1664,15 +1638,16 @@ let sunGiven = false;
 let beePollinated = false;
 let fruitTapped = 0;
 let leavesClicked = new Set();
+let narratorOpen = false;
 
 /* ===== Init ===== */
 function generateGrass() {
   const g = document.getElementById('grass');
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 60; i++) {
     const b = document.createElement('div');
     b.className = 'grass-blade';
-    b.style.left = `${(i / 80) * 100}%`;
-    b.style.height = `${25 + Math.random() * 25}px`;
+    b.style.left = `${(i / 60) * 100}%`;
+    b.style.height = `${20 + Math.random() * 20}px`;
     b.style.animationDelay = `${Math.random() * 2}s`;
     b.style.background = `hsl(${120 + Math.random() * 20}, ${50 + Math.random() * 20}%, ${35 + Math.random() * 15}%)`;
     g.appendChild(b);
@@ -1681,7 +1656,7 @@ function generateGrass() {
 
 function generateRain() {
   const r = document.getElementById('rain');
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 30; i++) {
     const d = document.createElement('div');
     d.className = 'raindrop';
     d.style.left = `${Math.random() * 100}%`;
@@ -1693,10 +1668,10 @@ function generateRain() {
 
 function generateSunRays() {
   const c = document.getElementById('sunRays');
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 10; i++) {
     const r = document.createElement('div');
     r.className = 'sun-ray';
-    r.style.transform = `rotate(${i * 30}deg) translateY(-58px)`;
+    r.style.transform = `rotate(${i * 36}deg) translateY(-40px)`;
     c.appendChild(r);
   }
 }
@@ -1731,13 +1706,13 @@ function buildControls() {
 
   const s = stages[currentStage];
   if (s.interactive === 'dig') {
-    if (!digDone) addBtn(c, 'btn btn-dig', '🪴 Dig a Hole!', doDig);
-    else if (!seedPlanted) addBtn(c, 'btn btn-dig', '🌰 Plant the Seed!', doPlantSeed);
+    if (!digDone) addBtn(c, 'btn btn-dig btn-action', '🪴 Dig a Hole!', doDig);
+    else if (!seedPlanted) addBtn(c, 'btn btn-dig btn-action', '🌰 Plant the Seed!', doPlantSeed);
     else addBtn(c, 'btn btn-next', 'Next ➡', () => goToStage(currentStage + 1));
   } else if (s.interactive === 'water') {
-    addBtn(c, 'btn btn-water', `💧 Water! (${waterCount}/${WATER_GOAL})`, doWater, 'waterBtn');
+    addBtn(c, 'btn btn-water btn-action', `💧 Water! (${waterCount}/${WATER_GOAL})`, doWater, 'waterBtn');
   } else if (s.interactive === 'sun') {
-    if (!sunGiven) addBtn(c, 'btn btn-sun', '☀️ Give Sunlight!', doSunlight);
+    if (!sunGiven) addBtn(c, 'btn btn-sun btn-action', '☀️ Give Sunlight!', doSunlight);
     else addBtn(c, 'btn btn-next', 'Next ➡', () => goToStage(currentStage + 1));
   } else if (s.interactive === 'leaves') {
     addBtn(c, 'btn btn-next', 'Next ➡', () => goToStage(currentStage + 1));
@@ -1745,7 +1720,7 @@ function buildControls() {
     if (beePollinated) addBtn(c, 'btn btn-next', 'Next ➡', () => goToStage(currentStage + 1));
   } else if (s.interactive === 'fruit') {
     addBtn(c, 'btn btn-restart', '🔄 Start Over', () => { resetState(); goToStage(0); });
-    addBtn(c, 'btn btn-quiz', '🧠 Take the Quiz!', openQuiz);
+    addBtn(c, 'btn btn-quiz', '🧠 Quiz!', openQuiz);
   }
 }
 
@@ -1759,57 +1734,74 @@ function addBtn(parent, cls, text, fn, id) {
 }
 
 /* ===== Narrator ===== */
-function showNarrator(text, fact) {
-  const area = document.getElementById('narratorArea');
+let currentNarrator = '';
+let currentFact = '';
+let currentInfo = null;
+
+function setNarratorContent(text, fact, info) {
+  currentNarrator = text;
+  currentFact = fact || '';
+  currentInfo = info || null;
+
   document.getElementById('narratorText').textContent = text;
-  document.getElementById('funFact').innerHTML = fact || '';
-  document.getElementById('funFact').style.display = fact ? 'block' : 'none';
-  area.classList.add('visible');
-}
+  const factEl = document.getElementById('funFact');
+  factEl.innerHTML = fact || '';
+  factEl.style.display = fact ? 'block' : 'none';
 
-function hideNarrator() {
-  document.getElementById('narratorArea').classList.remove('visible');
-}
-
-function pokeNarrator() {
-  const c = document.getElementById('narratorChar');
-  c.style.transform = 'scale(1.3) rotate(10deg)';
-  sfxPop();
-  createStarSparkle(c.getBoundingClientRect());
-  setTimeout(() => c.style.transform = '', 300);
-}
-
-/* ===== Instruction ===== */
-function showInstruction(text) {
-  const el = document.getElementById('instruction');
-  document.getElementById('instructionText').textContent = text;
-  el.classList.add('visible');
-}
-
-function hideInstruction() {
-  document.getElementById('instruction').classList.remove('visible');
-}
-
-/* ===== Info panel ===== */
-function showInfo(data) {
-  const panel = document.getElementById('infoPanel');
-  let needsHTML = '';
-  if (data.needs) {
-    needsHTML = '<ul class="needs-list">' +
-      data.needs.map((n, i) => `<li><div class="need-check" id="need${i}"></div>${n}</li>`).join('') +
-      '</ul>';
+  const infoEl = document.getElementById('narratorInfo');
+  if (info) {
+    let needsHTML = '';
+    if (info.needs) {
+      needsHTML = '<ul class="needs-list">' +
+        info.needs.map((n, i) => `<li><div class="need-check" id="need${i}"></div>${n}</li>`).join('') +
+        '</ul>';
+    }
+    infoEl.innerHTML = `<h4>${info.title}</h4><p>${info.text}</p>${needsHTML}`;
+    infoEl.style.display = 'block';
+  } else {
+    infoEl.style.display = 'none';
   }
-  panel.innerHTML = `<div class="info-card"><h3>${data.title}</h3><p>${data.text}</p>${needsHTML}</div>`;
-  panel.classList.add('visible');
+
+  // Pulse the toggle
+  document.getElementById('narratorToggle').classList.add('has-message');
+  document.getElementById('narratorHint').textContent = 'New message!';
 }
 
-function hideInfo() {
-  document.getElementById('infoPanel').classList.remove('visible');
+function toggleNarrator() {
+  if (narratorOpen) closeNarrator();
+  else openNarrator();
+}
+
+function openNarrator() {
+  narratorOpen = true;
+  document.getElementById('narratorOverlay').classList.add('visible');
+  document.getElementById('narratorToggle').classList.remove('has-message');
+  document.getElementById('narratorHint').textContent = '';
+  sfxPop();
+}
+
+function closeNarrator() {
+  narratorOpen = false;
+  document.getElementById('narratorOverlay').classList.remove('visible');
+}
+
+function closeNarratorIfBg(e) {
+  if (e.target === document.getElementById('narratorOverlay')) closeNarrator();
 }
 
 function checkNeed(index) {
   const el = document.getElementById('need' + index);
   if (el) { el.classList.add('done'); el.textContent = '✓'; }
+}
+
+/* ===== Instruction ===== */
+function showInstruction(text) {
+  document.getElementById('instructionText').textContent = text;
+  document.getElementById('instruction').classList.add('visible');
+}
+
+function hideInstruction() {
+  document.getElementById('instruction').classList.remove('visible');
 }
 
 /* ===== Go to stage ===== */
@@ -1822,30 +1814,36 @@ function goToStage(index) {
   document.getElementById('waterDrops').classList.remove('active');
   document.getElementById('badge').classList.remove('show');
   document.getElementById('sunbeam').classList.remove('visible');
-  document.getElementById('sky').classList.remove('night');
   hideInstruction();
-  hideInfo();
+  closeNarrator();
   removeBee();
 
   document.getElementById('stageName').textContent = s.name;
   document.getElementById('stageDesc').textContent = s.desc;
-  const label = document.getElementById('stageLabel');
-  label.style.display = 'none';
-  void label.offsetHeight;
-  label.style.display = '';
 
   document.getElementById('plantArea').innerHTML = '';
   s.build();
   buildProgress();
   buildControls();
-  showNarrator(s.narrator, s.funFact);
-  if (s.info) showInfo(s.info);
+  setNarratorContent(s.narrator, s.funFact, s.info);
 
   if (index >= 4) addButterflies();
   else removeButterflies();
 
   if (index === stages.length - 1) {
     setTimeout(celebrate, 2500);
+  }
+
+  // Auto-show narrator on first visit
+  if (!visited.has(-index - 1)) {
+    visited.add(-index - 1);
+    setTimeout(() => {
+      if (currentStage === index) openNarrator();
+    }, 800);
+    // Auto-close after reading time
+    setTimeout(() => {
+      if (currentStage === index && narratorOpen) closeNarrator();
+    }, 6000);
   }
 }
 
@@ -1860,7 +1858,7 @@ function resetState() {
   visited = new Set();
 }
 
-/* ===== Stage 0: Seed (Dig + Plant) ===== */
+/* ===== Stage 0: Seed ===== */
 function buildSeed() {
   digDone = false;
   seedPlanted = false;
@@ -1870,19 +1868,16 @@ function buildSeed() {
 function doDig() {
   sfxDig();
   const area = document.getElementById('plantArea');
-
-  // Show hole
   const hole = document.createElement('div');
   hole.className = 'dirt-hole';
   area.appendChild(hole);
   setTimeout(() => hole.classList.add('visible'), 50);
 
-  // Dirt pile
   const pile = document.createElement('div');
   pile.className = 'dirt-pile';
   pile.innerHTML = '<div class="dirt-chunk"></div><div class="dirt-chunk"></div><div class="dirt-chunk"></div>';
   pile.style.left = '50%';
-  pile.style.transform = 'translateX(calc(-50% + 50px))';
+  pile.style.transform = 'translateX(calc(-50% + 45px))';
   area.appendChild(pile);
   setTimeout(() => pile.classList.add('visible'), 200);
 
@@ -1895,14 +1890,13 @@ function doDig() {
 
 function createDirtParticles(area) {
   const rect = area.getBoundingClientRect();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     const p = document.createElement('div');
     p.className = 'sparkle';
-    p.style.left = `${rect.left + rect.width/2 + (Math.random()-0.5)*60}px`;
-    p.style.top = `${rect.bottom - 30}px`;
+    p.style.left = `${rect.left + rect.width/2 + (Math.random()-0.5)*50}px`;
+    p.style.top = `${rect.bottom - 25}px`;
     p.style.background = '#8D6E63';
-    p.style.width = '10px';
-    p.style.height = '10px';
+    p.style.width = '8px'; p.style.height = '8px';
     document.body.appendChild(p);
     setTimeout(() => p.remove(), 1000);
   }
@@ -1911,16 +1905,13 @@ function createDirtParticles(area) {
 function doPlantSeed() {
   sfxPop();
   const area = document.getElementById('plantArea');
-
   const seed = document.createElement('div');
   seed.className = 'seed seed-planted';
   area.appendChild(seed);
-
   seedPlanted = true;
   checkNeed(1);
   showInstruction('🎉 Seed planted! Let\'s water it!');
   createStarSparkle(area.getBoundingClientRect());
-
   setTimeout(() => buildControls(), 500);
 }
 
@@ -1933,7 +1924,6 @@ function buildWatering() {
   seed.style.transform = 'translateY(12px) scale(0.85)';
   seed.style.opacity = '0.7';
   area.appendChild(seed);
-
   showInstruction('💧 Tap "Water" 3 times!');
 }
 
@@ -1952,7 +1942,6 @@ function doWater() {
   const area = document.getElementById('plantArea');
   createSparklesAt(area.getBoundingClientRect(), ['#64B5F6','#42A5F5','#90CAF9']);
 
-  // Seed swells
   const seed = area.querySelector('.seed');
   if (seed) {
     const scale = 0.85 + waterCount * 0.06;
@@ -1973,24 +1962,14 @@ function buildSunlight() {
   const area = document.getElementById('plantArea');
   const sprout = document.createElement('div');
   sprout.className = 'sprout';
-  sprout.innerHTML = `
-    <div class="stem"></div>
-    <div class="small-leaf left"></div>
-    <div class="small-leaf right"></div>
-  `;
+  sprout.innerHTML = '<div class="stem"></div><div class="small-leaf left"></div><div class="small-leaf right"></div>';
   area.appendChild(sprout);
 
-  // Roots
   const roots = document.createElement('div');
   roots.className = 'roots visible';
-  roots.innerHTML = `
-    <div class="root-line"><div class="root-branch left"></div><div class="root-branch right"></div></div>
-    <div class="root-line"><div class="root-branch left"></div></div>
-    <div class="root-line"><div class="root-branch right"></div></div>
-  `;
+  roots.innerHTML = '<div class="root-line"><div class="root-branch left"></div><div class="root-branch right"></div></div><div class="root-line"><div class="root-branch left"></div></div><div class="root-line"><div class="root-branch right"></div></div>';
   area.appendChild(roots);
   setTimeout(() => roots.querySelectorAll('.root-line').forEach(r => r.classList.add('grown')), 300);
-
   showInstruction('☀️ Tap "Give Sunlight"!');
 }
 
@@ -1999,23 +1978,14 @@ function doSunlight() {
   sunGiven = true;
   document.getElementById('sunbeam').classList.add('visible');
   checkNeed(0);
-
-  const sun = document.getElementById('sun');
   const face = document.getElementById('sunFace');
   face.textContent = '😄';
-  sun.style.boxShadow = '0 0 100px #FFD54F, 0 0 200px #FFE082';
-
   showInstruction('🌞 The plant loves sunlight!');
   createStarSparkle(document.getElementById('plantArea').getBoundingClientRect());
-
-  setTimeout(() => {
-    sun.style.boxShadow = '';
-    face.textContent = '😊';
-    buildControls();
-  }, 1200);
+  setTimeout(() => { face.textContent = '😊'; buildControls(); }, 1200);
 }
 
-/* ===== Stage 3: Growing (click leaves) ===== */
+/* ===== Stage 3: Growing ===== */
 function buildYoungPlant() {
   leavesClicked = new Set();
   const area = document.getElementById('plantArea');
@@ -2029,20 +1999,13 @@ function buildYoungPlant() {
       <div class="leaf right leaf-4" onclick="clickLeaf(this, 3)"><div class="leaf-vein"></div></div>
       <div class="leaf left leaf-5" onclick="clickLeaf(this, 4)"><div class="leaf-vein"></div></div>
       <div class="leaf right leaf-6" onclick="clickLeaf(this, 5)"><div class="leaf-vein"></div></div>
-    </div>
-  `;
+    </div>`;
   area.appendChild(plant);
 
-  // Roots
   const roots = document.createElement('div');
   roots.className = 'roots visible';
-  roots.innerHTML = `
-    <div class="root-line grown"><div class="root-branch left"></div><div class="root-branch right"></div></div>
-    <div class="root-line grown"><div class="root-branch left"></div></div>
-    <div class="root-line grown"><div class="root-branch right"></div></div>
-  `;
+  roots.innerHTML = '<div class="root-line grown"><div class="root-branch left"></div><div class="root-branch right"></div></div><div class="root-line grown"><div class="root-branch left"></div></div><div class="root-line grown"><div class="root-branch right"></div></div>';
   area.appendChild(roots);
-
   sfxGrow();
   showInstruction('🍃 Tap the leaves to learn about them!');
 }
@@ -2052,7 +2015,7 @@ const leafFacts = [
   "💨 Leaves breathe in CO2 from the air!",
   "💧 Leaves pull water up from the roots!",
   "🍬 Leaves make sugar food for the plant!",
-  "🌬️ Tiny holes in leaves let water out — it's called transpiration!",
+  "🌬️ Tiny holes in leaves let water out!",
   "🟢 Leaves are green because of chlorophyll!"
 ];
 
@@ -2061,10 +2024,7 @@ function clickLeaf(el, idx) {
   el.classList.add('clicked');
   leavesClicked.add(idx);
   createStarSparkle(el.getBoundingClientRect());
-
-  // Show floating fact
-  const fact = leafFacts[idx];
-  showInstruction(fact);
+  showInstruction(leafFacts[idx]);
   setTimeout(() => {
     if (leavesClicked.size < 6) showInstruction('🍃 Tap more leaves!');
     else showInstruction('🎉 You found all the leaf facts!');
@@ -2077,13 +2037,10 @@ function buildFlower() {
   const area = document.getElementById('plantArea');
   const plant = document.createElement('div');
   plant.className = 'flower-plant';
-
   let petals = '';
   for (let i = 0; i < 8; i++) {
-    const c = i % 2 === 0 ? 'petal-yellow' : 'petal-pink';
-    petals += `<div class="petal ${c}"></div>`;
+    petals += `<div class="petal ${i % 2 === 0 ? 'petal-yellow' : 'petal-pink'}"></div>`;
   }
-
   plant.innerHTML = `
     <div class="stem">
       <div class="leaf left leaf-3"></div>
@@ -2091,20 +2048,10 @@ function buildFlower() {
       <div class="leaf left leaf-5"></div>
       <div class="leaf right leaf-6"></div>
     </div>
-    <div class="flower-head" id="flowerHead">
-      ${petals}
-      <div class="flower-center" id="flowerCenter"></div>
-    </div>
-  `;
+    <div class="flower-head" id="flowerHead">${petals}<div class="flower-center" id="flowerCenter"></div></div>`;
   area.appendChild(plant);
-
   sfxBloom();
-
-  // Add bee after bloom
-  setTimeout(() => {
-    addBee();
-    showInstruction('🐝 Drag the bee to the flower!');
-  }, 2600);
+  setTimeout(() => { addBee(); showInstruction('🐝 Drag the bee to the flower!'); }, 2600);
 }
 
 function addBee() {
@@ -2113,16 +2060,16 @@ function addBee() {
   bee.className = 'bee buzz';
   bee.id = 'bee';
   bee.textContent = '🐝';
-  bee.style.top = '25%';
-  bee.style.left = '15%';
+  bee.style.top = '22%';
+  bee.style.left = '12%';
   document.getElementById('scene').appendChild(bee);
 
-  // Drag
   let dragging = false;
   let offX, offY;
 
   function onDown(e) {
     e.preventDefault();
+    e.stopPropagation();
     dragging = true;
     const p = e.touches ? e.touches[0] : e;
     const r = bee.getBoundingClientRect();
@@ -2139,23 +2086,12 @@ function addBee() {
     bee.style.left = `${p.clientX - offX}px`;
     bee.style.top = `${p.clientY - offY}px`;
     bee.style.position = 'fixed';
-
-    // Trail
-    const trail = document.createElement('div');
-    trail.className = 'bee-trail';
-    trail.style.position = 'fixed';
-    trail.style.left = `${p.clientX}px`;
-    trail.style.top = `${p.clientY}px`;
-    document.body.appendChild(trail);
-    setTimeout(() => trail.remove(), 500);
   }
 
   function onUp() {
     if (!dragging) return;
     dragging = false;
     bee.classList.add('buzz');
-
-    // Check if near flower
     const flowerCenter = document.getElementById('flowerCenter');
     if (flowerCenter) {
       const bR = bee.getBoundingClientRect();
@@ -2164,9 +2100,7 @@ function addBee() {
         (bR.left + bR.width/2) - (fR.left + fR.width/2),
         (bR.top + bR.height/2) - (fR.top + fR.height/2)
       );
-      if (dist < 80) {
-        doPollinate();
-      }
+      if (dist < 90) doPollinate();
     }
   }
 
@@ -2187,41 +2121,28 @@ function addBee() {
 
 function removeBee() {
   const bee = document.getElementById('bee');
-  if (bee) {
-    if (bee._cleanup) bee._cleanup();
-    bee.remove();
-  }
+  if (bee) { if (bee._cleanup) bee._cleanup(); bee.remove(); }
 }
 
 function doPollinate() {
   if (beePollinated) return;
   beePollinated = true;
   sfxCelebrate();
-
-  // Pollen explosion
   const fc = document.getElementById('flowerCenter');
   if (fc) {
     const r = fc.getBoundingClientRect();
-    for (let i = 0; i < 12; i++) {
+    for (let i = 0; i < 10; i++) {
       const p = document.createElement('div');
       p.className = 'sparkle';
-      p.style.left = `${r.left + r.width/2 + (Math.random()-0.5)*60}px`;
-      p.style.top = `${r.top + r.height/2 + (Math.random()-0.5)*60}px`;
+      p.style.left = `${r.left + r.width/2 + (Math.random()-0.5)*50}px`;
+      p.style.top = `${r.top + r.height/2 + (Math.random()-0.5)*50}px`;
       p.style.background = '#FFD54F';
-      p.style.width = '8px';
-      p.style.height = '8px';
       document.body.appendChild(p);
       setTimeout(() => p.remove(), 1000);
     }
   }
-
-  showInstruction('🎉 Pollination complete! The bee spread pollen!');
-  createStarSparkle(document.getElementById('plantArea').getBoundingClientRect());
-
-  setTimeout(() => {
-    removeBee();
-    buildControls();
-  }, 1200);
+  showInstruction('🎉 Pollination complete!');
+  setTimeout(() => { removeBee(); buildControls(); }, 1200);
 }
 
 /* ===== Stage 5: Fruit ===== */
@@ -2230,7 +2151,6 @@ function buildFruit() {
   const area = document.getElementById('plantArea');
   const plant = document.createElement('div');
   plant.className = 'fruit-plant';
-
   plant.innerHTML = `
     <div class="stem">
       <div class="leaf left leaf-3"></div>
@@ -2239,31 +2159,22 @@ function buildFruit() {
       <div class="leaf right leaf-6"></div>
     </div>
     <div class="fruit" onclick="tapFruit(this)">
-      <div class="fruit-body">
-        <div class="fruit-leaf-top"></div>
-        <div class="fruit-shine"></div>
-      </div>
+      <div class="fruit-body"><div class="fruit-leaf-top"></div><div class="fruit-shine"></div></div>
     </div>
     <div class="fruit-cross" id="fruitCross">
-      <div class="fruit-cross-seed"></div>
-      <div class="fruit-cross-seed"></div>
-      <div class="fruit-cross-seed"></div>
+      <div class="fruit-cross-seed"></div><div class="fruit-cross-seed"></div><div class="fruit-cross-seed"></div>
       <div class="fruit-cross-label">Seeds inside!</div>
-    </div>
-  `;
+    </div>`;
   area.appendChild(plant);
-
-  showInstruction('🍎 Tap the fruit to see what\'s inside!');
+  showInstruction('🍎 Tap the fruit to see inside!');
 }
 
 function tapFruit(el) {
   fruitTapped++;
   sfxPop();
-
   if (fruitTapped === 1) {
-    // Show cross section
     document.getElementById('fruitCross').classList.add('visible');
-    showInstruction('🌰 Look! Seeds inside! Tap again to scatter them!');
+    showInstruction('🌰 Seeds inside! Tap again to scatter them!');
     createStarSparkle(el.getBoundingClientRect());
   } else {
     dropSeeds(el);
@@ -2274,7 +2185,7 @@ function tapFruit(el) {
 function dropSeeds(el) {
   sfxGrow();
   const rect = el.getBoundingClientRect();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 5; i++) {
     const seed = document.createElement('div');
     seed.className = 'falling-seed';
     seed.style.left = `${rect.left + Math.random() * rect.width}px`;
@@ -2287,25 +2198,22 @@ function dropSeeds(el) {
 }
 
 /* ===== Effects ===== */
-function createSparkles(el) { createSparklesAt(el.getBoundingClientRect()); }
-
 function createSparklesAt(rect, colors) {
   const cols = colors || ['#FFD54F', '#FF7043', '#AB47BC', '#42A5F5', '#66BB6A'];
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     const s = document.createElement('div');
     s.className = 'sparkle';
     s.style.left = `${rect.left + Math.random() * rect.width}px`;
     s.style.top = `${rect.top + Math.random() * rect.height}px`;
     s.style.background = cols[Math.floor(Math.random() * cols.length)];
-    s.style.animationDelay = `${Math.random() * 0.3}s`;
     document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1200);
+    setTimeout(() => s.remove(), 1000);
   }
 }
 
 function createStarSparkle(rect) {
   const stars = ['⭐','✨','💫','🌟'];
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     const s = document.createElement('div');
     s.className = 'star-sparkle';
     s.textContent = stars[i % stars.length];
@@ -2330,10 +2238,10 @@ function addButterflies() {
   for (let i = 0; i < 2; i++) {
     const bf = document.createElement('div');
     bf.className = 'butterfly';
-    bf.style.top = `${15 + Math.random() * 25}%`;
-    bf.style.left = `${20 + Math.random() * 50}%`;
+    bf.style.top = `${12 + Math.random() * 20}%`;
+    bf.style.left = `${15 + Math.random() * 50}%`;
     bf.style.animationDelay = `${i * 3}s`;
-    bf.innerHTML = `<span class="butterfly-wing">🦋</span>`;
+    bf.innerHTML = '<span class="butterfly-wing">🦋</span>';
     document.getElementById('scene').appendChild(bf);
   }
 }
@@ -2345,7 +2253,7 @@ function removeButterflies() {
 function celebrate() {
   sfxCelebrate();
   const colors = ['#FF5252','#FF4081','#7C4DFF','#448AFF','#69F0AE','#FFD740','#FF6E40'];
-  for (let i = 0; i < 50; i++) {
+  for (let i = 0; i < 40; i++) {
     const c = document.createElement('div');
     c.className = 'confetti';
     c.style.left = `${Math.random() * 100}%`;
@@ -2364,58 +2272,22 @@ function celebrate() {
 
 /* ===== Quiz ===== */
 const quizQuestions = [
-  {
-    q: "What is the very first stage of a plant's life?",
-    opts: ["Flower", "Seed", "Fruit", "Leaf"],
-    answer: 1
-  },
-  {
-    q: "What does a seed need to start growing?",
-    opts: ["Candy", "Water", "Snow", "Paint"],
-    answer: 1
-  },
-  {
-    q: "What do leaves use to make food?",
-    opts: ["Moonlight", "Sunlight", "Starlight", "Flashlight"],
-    answer: 1
-  },
-  {
-    q: "Who helps spread pollen between flowers?",
-    opts: ["Fish", "Bees", "Cats", "Snakes"],
-    answer: 1
-  },
-  {
-    q: "What grows after a flower is pollinated?",
-    opts: ["More flowers", "A fruit with seeds", "A rock", "A cloud"],
-    answer: 1
-  },
-  {
-    q: "What is the process called when plants use sunlight to make food?",
-    opts: ["Sleeping", "Photosynthesis", "Dancing", "Swimming"],
-    answer: 1
-  },
-  {
-    q: "What part of the plant drinks water from the soil?",
-    opts: ["Petals", "Leaves", "Roots", "Flowers"],
-    answer: 2
-  },
-  {
-    q: "What happens to the seed when it gets water?",
-    opts: ["It floats away", "It cracks open and a sprout grows", "It turns into a rock", "It disappears"],
-    answer: 1
-  }
+  { q: "What is the very first stage of a plant's life?", opts: ["Flower", "Seed", "Fruit", "Leaf"], answer: 1 },
+  { q: "What does a seed need to start growing?", opts: ["Candy", "Water", "Snow", "Paint"], answer: 1 },
+  { q: "What do leaves use to make food?", opts: ["Moonlight", "Sunlight", "Starlight", "Flashlight"], answer: 1 },
+  { q: "Who helps spread pollen between flowers?", opts: ["Fish", "Bees", "Cats", "Snakes"], answer: 1 },
+  { q: "What grows after a flower is pollinated?", opts: ["More flowers", "A fruit with seeds", "A rock", "A cloud"], answer: 1 },
+  { q: "What is it called when plants make food from sunlight?", opts: ["Sleeping", "Photosynthesis", "Dancing", "Swimming"], answer: 1 },
+  { q: "What part of the plant drinks water from the soil?", opts: ["Petals", "Leaves", "Roots", "Flowers"], answer: 2 },
+  { q: "What happens to a seed when it gets water?", opts: ["It floats away", "It cracks open and sprouts", "It turns into a rock", "It disappears"], answer: 1 }
 ];
 
-let quizIndex = 0;
-let quizScore = 0;
-let quizAnswered = false;
-let shuffledQuiz = [];
+let quizIndex = 0, quizScore = 0, quizAnswered = false, shuffledQuiz = [];
 
 function openQuiz() {
   document.getElementById('badge').classList.remove('show');
   shuffledQuiz = [...quizQuestions].sort(() => Math.random() - 0.5).slice(0, 5);
-  quizIndex = 0;
-  quizScore = 0;
+  quizIndex = 0; quizScore = 0;
   showQuizQuestion();
   document.getElementById('quizOverlay').classList.add('visible');
 }
@@ -2435,8 +2307,6 @@ function showQuizQuestion() {
 
   const optsEl = document.getElementById('quizOptions');
   optsEl.innerHTML = '';
-
-  // Shuffle options but track correct answer
   const indices = q.opts.map((_, i) => i).sort(() => Math.random() - 0.5);
   const correctShuffled = indices.indexOf(q.answer);
 
@@ -2452,47 +2322,39 @@ function showQuizQuestion() {
 function answerQuiz(btn, chosen, correct) {
   if (quizAnswered) return;
   quizAnswered = true;
-
   const opts = document.querySelectorAll('.quiz-option');
   if (chosen === correct) {
-    btn.classList.add('correct');
-    quizScore++;
-    document.getElementById('quizResult').innerHTML = '<span style="color:#2E7D32">✅ Correct! Great job!</span>';
+    btn.classList.add('correct'); quizScore++;
+    document.getElementById('quizResult').innerHTML = '<span style="color:#2E7D32">✅ Correct!</span>';
     sfxCorrect();
   } else {
-    btn.classList.add('wrong');
-    opts[correct].classList.add('correct');
-    document.getElementById('quizResult').innerHTML = '<span style="color:#C62828">❌ Not quite! The green one is right.</span>';
+    btn.classList.add('wrong'); opts[correct].classList.add('correct');
+    document.getElementById('quizResult').innerHTML = '<span style="color:#C62828">❌ The green one is right!</span>';
     sfxWrong();
   }
-
   document.getElementById('quizNextBtn').style.display = 'inline-block';
   document.getElementById('quizNextBtn').textContent = quizIndex < shuffledQuiz.length - 1 ? 'Next Question' : 'See Results!';
 }
 
 function nextQuizQuestion() {
   quizIndex++;
-  if (quizIndex < shuffledQuiz.length) {
-    showQuizQuestion();
-  } else {
-    showQuizResults();
-  }
+  if (quizIndex < shuffledQuiz.length) showQuizQuestion();
+  else showQuizResults();
 }
 
 function showQuizResults() {
   const pct = Math.round((quizScore / shuffledQuiz.length) * 100);
   const emoji = pct === 100 ? '🏆' : pct >= 60 ? '🌟' : '🌱';
-  const msg = pct === 100 ? 'Perfect score! You\'re a Plant Genius!' : pct >= 60 ? 'Great job! You know your plants!' : 'Good try! Review the stages and try again!';
+  const msg = pct === 100 ? "Perfect! You're a Plant Genius!" : pct >= 60 ? 'Great job! You know your plants!' : 'Good try! Review the stages and try again!';
 
   document.getElementById('quizTitle').textContent = 'Quiz Complete!';
   document.getElementById('quizProgress').textContent = '';
-  document.getElementById('quizQuestion').innerHTML = `<div style="text-align:center"><div class="quiz-score">${emoji}</div><div style="font-size:28px;font-weight:800">${quizScore} / ${shuffledQuiz.length}</div></div>`;
-  document.getElementById('quizOptions').innerHTML = `<div style="text-align:center;font-size:18px;color:#555">${msg}</div>`;
+  document.getElementById('quizQuestion').innerHTML = `<div style="text-align:center"><div class="quiz-score">${emoji}</div><div style="font-size:26px;font-weight:800">${quizScore} / ${shuffledQuiz.length}</div></div>`;
+  document.getElementById('quizOptions').innerHTML = `<div style="text-align:center;font-size:16px;color:#555">${msg}</div>`;
   document.getElementById('quizResult').textContent = '';
   document.getElementById('quizNextBtn').textContent = '🔄 Play Again';
   document.getElementById('quizNextBtn').style.display = 'inline-block';
   document.getElementById('quizNextBtn').onclick = () => { openQuiz(); document.getElementById('quizNextBtn').onclick = nextQuizQuestion; };
-
   if (pct === 100) sfxCelebrate();
 }
 
